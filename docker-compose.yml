@@ -1,0 +1,43 @@
+version: "3.9"
+
+networks:
+  hawkeye:
+    name: hawkeye_net
+
+services:
+  apphawkeye:
+    build:
+      context: ./
+      dockerfile: Dockerfile.app
+      target: app_dev
+    container_name: apphawkeye
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - hawkeye
+  mongo_1:
+    image: mongo:5.0.16
+    container_name: mongo_1
+    command: ["--replSet", "hawkeye-replset", "--bind_ip_all", "--port", "3200"]
+    volumes:
+      - ./data/mongo_1:/data/db
+    ports:
+      - 3200:3200
+    healthcheck:
+      test: test $$(echo "rs.initiate({_id:'hawkeye-replset',members:[{_id:0,host:\"mongo_1:3200\"},{_id:1,host:\"mongo_2:3300\"}]}).ok || rs.status().ok" | mongo --port 3200 --quiet) -eq 1
+      interval: 10s
+      start_period: 30s
+    networks:
+      - hawkeye
+  mongo_2:
+    image: mongo:5.0.16
+    container_name: mongo_2
+    command: ["--replSet", "hawkeye-replset", "--bind_ip_all", "--port", "3300"]
+    volumes:
+      - ./data/mongo_2:/data/db
+    ports:
+      - 3300:3300
+    networks:
+      - hawkeye
