@@ -16,7 +16,7 @@ Open [http://localhost:3100](http://localhost:3100) with your browser to see the
 
 ## API routes,
 
-The `pages/api` directory is mapped to '/api/\*' and can be accessed on [http://localhost:3100/api/<name>](http://localhost:3100/api/<name>)
+The `pages/api` directory is mapped to `/api/\*` and can be accessed on [http://localhost:3100/api/<name>](http://localhost:3100/api/<name>)
 
 ## MongoDb connection string
 
