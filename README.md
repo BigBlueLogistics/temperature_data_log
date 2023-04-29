@@ -14,10 +14,10 @@ pnpm dev
 
 Open [http://localhost:3100](http://localhost:3100) with your browser to see the result.
 
-## API routes,
+## API routes
 
 The `pages/api` directory is mapped to `/api/\*` and can be accessed on [http://localhost:3100/api/<name>](http://localhost:3100/api/<name>)
 
-## MongoDb connection string
+## MongoDB connection string
 
 mongodb://mongo_1:3200,mongo_2:3300/?replicaSet=hawkeye-replset&appName=mongosh+1.8.0
