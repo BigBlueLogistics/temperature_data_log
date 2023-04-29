@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Document } from "mongodb";
+import { Document, ObjectId } from "mongodb";
 import mongodbInit from "@/lib/mongodb";
+import { getErrorMessage } from "@/utils";
 
 type TData = {
   data?: Document;
@@ -20,12 +21,13 @@ export default async function handler(
 
     switch (method) {
       case "POST":
-        const { celsius, humidity, heatindex } = body;
+        const { celsius, humidity, heatindex, room_id } = body;
 
         const post = await db.collection("temperature").insertOne({
           celsius,
           humidity,
           heatindex,
+          room_id: new ObjectId(room_id),
           created_at: new Date(),
         });
         res.status(200).json({ status: "succeeded", data: post });
@@ -36,7 +38,9 @@ export default async function handler(
         res.status(405).end(`Method "${method}" Not allowed`);
         break;
     }
-  } catch (e: any) {
-    return res.status(500).json({ status: "error", message: e.message });
+  } catch (e) {
+    return res
+      .status(500)
+      .json({ status: "error", message: getErrorMessage(e) });
   }
 }

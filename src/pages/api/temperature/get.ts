@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Document } from "mongodb";
 import mongodbInit from "@/lib/mongodb";
+import { getErrorMessage } from "@/util";
 
 type TData = {
   data?: Document[];
@@ -25,7 +26,9 @@ export default async function handler(
       .toArray();
 
     return res.json({ status: "succeeded", data: temp });
-  } catch (e: any) {
-    return res.status(500).json({ status: "error" });
+  } catch (e) {
+    return res
+      .status(500)
+      .json({ status: "error", message: getErrorMessage(e) });
   }
 }
