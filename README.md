@@ -20,4 +20,4 @@ The `pages/api` directory is mapped to `/api/\*` and can be accessed on [http://
 
 ## MongoDB connection string
 
-mongodb://mongo_1:3200,mongo_2:3300/?replicaSet=hawkeye-replset&appName=mongosh+1.8.0
+mongodb://mongo_1:3200,mongo_2:3300/?replicaSet=hawkeye-replset
