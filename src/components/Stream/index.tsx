@@ -1,47 +1,72 @@
-import { useEffect, useState, useMemo, Suspense } from "react";
+"use client";
+
+import { useEffect, useState, Suspense } from "react";
 import { Inter } from "next/font/google";
 import dynamic from "next/dynamic";
+import { fetchEventSource } from "@microsoft/fetch-event-source";
 import { ChangeStreamDocument } from "mongodb";
 import GaugeSkeleton from "@/components/GaugeSkeleton";
 import { TStreamData, Props } from "./types";
 
 const inter = Inter({ subsets: ["latin"] });
 const Gauge = dynamic(() => import("../Gauge"), {
-  ssr: false,
   loading: () => <GaugeSkeleton />,
 });
 
 function Stream({ initialTemp }: Props) {
-  const eventSource = useMemo(() => {
-    return new window.EventSource("/api/watcher/stream");
-  }, []);
-
   const [listTemp, setTemp] = useState(initialTemp);
 
   useEffect(() => {
-    eventSource.addEventListener("message", (event) => {
-      const newStreamTempData: ChangeStreamDocument<TStreamData> = JSON.parse(
-        event.data
-      );
+    const fetchData = async () => {
+      await fetchEventSource("/api/watcher", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        onopen(res) {
+          if (res.ok && res.status === 200) {
+            console.log("Connection made ", res);
+          } else if (
+            res.status >= 400 &&
+            res.status < 500 &&
+            res.status !== 429
+          ) {
+            console.log("Client side error ", res);
+          }
+        },
+        onmessage(event) {
+          console.log("Event message: ", event.data);
+          const parsedData: ChangeStreamDocument<TStreamData> = JSON.parse(
+            event.data
+          );
 
-      // Update the UI with the new data
-      if (newStreamTempData.operationType === "insert") {
-        const { room_id, celsius, created_at } = newStreamTempData.fullDocument;
-        console.log("stream data", { room_id, celsius, created_at });
+          // Update the UI with the new data
+          if (parsedData.operationType === "insert") {
+            const { room_id, celsius, created_at } = parsedData.fullDocument;
 
-        setTemp((prev) => ({
-          ...prev,
-          [room_id]: {
-            ...prev[room_id],
-            temperature: {
-              celsius,
-              created_at,
-            },
-          },
-        }));
-      }
-    });
-  }, [eventSource]);
+            setTemp((prev) => ({
+              ...prev,
+              [room_id]: {
+                ...prev[room_id],
+                temperature: {
+                  celsius,
+                  created_at,
+                },
+              },
+            }));
+          }
+        },
+        onclose() {
+          console.log("Connection closed by the server");
+        },
+        onerror(err) {
+          console.log("There was an error from server", err);
+        },
+      });
+    };
+
+    fetchData();
+  }, []);
 
   const arrListTemp = Object.entries(listTemp);
 
