@@ -7,14 +7,14 @@ networks:
 services:
   apphawkeye:
     build:
-      context: ./
-      dockerfile: Dockerfile.app
+      context: ./app
+      dockerfile: Dockerfile
       target: app_dev
     container_name: apphawkeye
     ports:
       - "3100:3100"
     volumes:
-      - ./:/var/www/html
+      - ./app:/var/www/html
     networks:
       - hawkeye
   mongo_1:
@@ -22,7 +22,7 @@ services:
     container_name: mongo_1
     command: ["--replSet", "hawkeye-replset", "--bind_ip_all", "--port", "3200"]
     volumes:
-      - ./data/mongo_1:/data/db
+      - ./app/data/mongo_1:/data/db
     ports:
       - 3200:3200
     healthcheck:
@@ -36,8 +36,18 @@ services:
     container_name: mongo_2
     command: ["--replSet", "hawkeye-replset", "--bind_ip_all", "--port", "3300"]
     volumes:
-      - ./data/mongo_2:/data/db
+      - ./app/data/mongo_2:/data/db
     ports:
       - 3300:3300
+    networks:
+      - hawkeye
+  jobhawkeye:
+    build:
+      context: ./jobs
+      dockerfile: Dockerfile
+      target: job_dev
+    container_name: jobhawkeye
+    volumes:
+      - ./jobs:/var/www/html
     networks:
       - hawkeye

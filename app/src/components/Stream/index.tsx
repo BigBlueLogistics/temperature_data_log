@@ -20,9 +20,6 @@ function Stream({ initialTemp }: Props) {
     const fetchData = async () => {
       await fetchEventSource("/api/watcher", {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
         onopen(res) {
           if (res.ok && res.status === 200) {
             console.log("Connection made ", res);

@@ -16,7 +16,7 @@ export async function GET() {
   const changeStream = db.collection("temperature").watch();
 
   changeStream.on("change", async (change: any) => {
-    console.log("Change stream events:", writer);
+    console.log("Change stream events:", change);
 
     await writer.ready;
     await writer.write(encoder.encode(`data: ${JSON.stringify(change)}\n\n`));
