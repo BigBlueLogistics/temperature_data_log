@@ -1,5 +1,3 @@
 .git
 devspace.yaml
 .DS_Store
-
-node_modules/
