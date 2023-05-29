@@ -1,51 +1,85 @@
 require("dotenv").config();
 const cron = require("node-cron");
-const { MongoClient, ObjectId } = require("mongodb");
-const { format, parseISO } = require("date-fns");
-const { count } = require("console");
+const { MongoClient } = require("mongodb");
+const { subMinutes } = require("date-fns");
 
 const { MONGODB_URI, DB_NAME } = process.env;
 const conn = new MongoClient(MONGODB_URI, {});
 
-cron.schedule("*/2 * * * * *", async function () {
-  // const temp = await conn
-  //   .db(DB_NAME)
-  //   .collection("room")
-  //   .find()
-  //   .map(async function (doc) {
-  //     // const lastRead = await conn
-  //     //   .db(DB_NAME)
-  //     //   .collection("last_read")
-  //     //   .find({ room_id: doc._id })
-  //     //   .toArray();
+// Run job at every 30 minute.
+cron.schedule("*/30 * * * *", async function () {
+  try {
+    const timeNow = new Date();
+    const from = subMinutes(timeNow, 30);
+    const to = timeNow;
 
-  //     let temp = [];
-  //     // const from = doc.last_read_at ?  :
-  //     if (doc.last_read_at) {
-  //       temp = await conn
-  //         .db(DB_NAME)
-  //         .collection("temperature")
-  //         .aggregate([
-  //           {
-  //             $match: { room_id: doc._id },
-  //           },
-  //           {
-  //             $group: { _id: "$room_id", total: { $avg: "$celsius" } },
-  //           },
-  //         ])
-  //         .toArray();
-  //     }
+    const roomAvgTemp = await conn
+      .db(DB_NAME)
+      .collection("room")
+      .aggregate([
+        {
+          $lookup: {
+            from: "temperature",
+            localField: "_id",
+            foreignField: "room_id",
+            pipeline: [
+              {
+                $match: { created_at: { $gt: from, $lte: to } },
+              },
+              {
+                $group: {
+                  _id: "$room_id",
+                  avgCelsius: { $avg: "$celsius" },
+                  maxCelsiusCreatedAt: { $max: "$created_at" },
+                },
+              },
+              { $sort: { created_at: -1 } },
+              { $addFields: { roundCelsius: { $round: ["$avgCelsius", 2] } } },
+              {
+                $project: {
+                  _id: 0,
+                  celsius: "$roundCelsius",
+                  last_temperature_at: "$maxCelsiusCreatedAt",
+                },
+              },
+            ],
+            as: "temperature",
+          },
+        },
+        { $unwind: "$temperature" },
+        {
+          $project: {
+            _id: 0,
+            room_id: "$_id",
+            celsius: "$temperature.celsius",
+            last_temperature_at: "$temperature.last_temperature_at",
+          },
+        },
+      ])
+      .toArray();
 
-  //     return {
-  //       name: doc.name,
-  //       room_id: doc._id,
-  //       temperature: JSON.stringify(temp),
-  //     };
-  //   })
-  //   .toArray();
-  // console.log("Job mongo", temp);
-  console.log(
-    "Job mongo",
-    format(new Date(), "MM/dd/yyyy hh:mm:ss", { locale: "Asia/Manila" })
-  );
+    if (roomAvgTemp && roomAvgTemp.length) {
+      // Insert the average celsius if not exists in avg_temperature
+      roomAvgTemp.forEach(({ room_id, celsius, last_temperature_at }) => {
+        conn
+          .db(DB_NAME)
+          .collection("avg_temperature")
+          .findOneAndReplace(
+            { room_id, last_temperature_at },
+            { room_id, celsius, last_temperature_at, created_at: new Date() },
+            { upsert: true }
+          );
+      });
+
+      console.log(
+        `[${new Date().toLocaleString()}] Job success: insert average temperature`
+      );
+    } else {
+      console.log("Job: no average temperature");
+    }
+    return;
+  } catch (error) {
+    console.error(`Job error: ${error}`);
+    return;
+  }
 });
