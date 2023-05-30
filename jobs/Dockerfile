@@ -28,10 +28,5 @@ FROM main as job_dev
 CMD ["yarn","dev"]
 
 FROM main as job_prod
-ARG build_dir
 
-RUN mkdir -p ${build_dir}
-RUN chown node:node -R ${build_dir} && \
-    chmod 755 -R ${build_dir}
-
-CMD ["yarn","build"]
+CMD ["yarn","start:prod"]

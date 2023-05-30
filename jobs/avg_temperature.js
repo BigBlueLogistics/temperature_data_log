@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
 const cron = require("node-cron");
 const { MongoClient } = require("mongodb");
 const { subMinutes } = require("date-fns");
