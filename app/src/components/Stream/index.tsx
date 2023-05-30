@@ -22,13 +22,11 @@ function Stream({ initialTemp }: Props) {
         method: "GET",
         onopen(res) {
           if (res.ok && res.status === 200) {
-            console.log("Connection made ", res);
-          } else if (
-            res.status >= 400 &&
-            res.status < 500 &&
-            res.status !== 429
-          ) {
-            console.log("Client side error ", res);
+            console.log("Connection success ", res);
+            return Promise.resolve();
+          } else {
+            console.log("Connection error ", res);
+            return Promise.reject();
           }
         },
         onmessage(event) {
@@ -91,6 +89,7 @@ function Stream({ initialTemp }: Props) {
                 majorTicks={[40, 35, 30, 25, 20, 15, 10, 5, 0]}
                 minorTicks={5}
                 strokeTicks={true}
+                // @ts-ignore
                 barStartPosition="right"
                 highlights={[
                   {

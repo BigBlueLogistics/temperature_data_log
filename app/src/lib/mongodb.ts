@@ -24,7 +24,10 @@ if (process.env.NODE_ENV === "development") {
   mongodbInit = global._mongoClientPromise;
 } else {
   // In production mode, it's best to not use a global variable.
-  client = new MongoClient(uri, options);
+  client = new MongoClient(
+    "mongodb://mongo_1_prod:4200,mongo_2_prod:4300/?replicaSet=hawkeye-replset",
+    options
+  );
   mongodbInit = client.connect();
 }
 
