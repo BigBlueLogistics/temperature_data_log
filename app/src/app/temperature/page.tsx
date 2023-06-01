@@ -1,7 +1,12 @@
-import dynamic from "next/dynamic";
+import dynamicImport from "next/dynamic";
 import { getTemperature } from "@/services/room";
 
-const Stream = dynamic(() => import("../../components/Stream"), { ssr: false });
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+const Stream = dynamicImport(() => import("../../components/Stream"), {
+  ssr: false,
+});
 
 async function Temperature() {
   const room = await getTemperature();

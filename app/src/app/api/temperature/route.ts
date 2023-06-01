@@ -30,18 +30,17 @@ export async function GET() {
   }
 }
 
-export async function POST(req: NextResponse) {
+export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const client = await mongodbInit;
     const db = client.db(process.env.DB_NAME);
 
-    const { celsius, humidity, heatindex, room_id } = body;
+    const { celsius, humidity, room_id } = body;
 
     const post = await db.collection("temperature").insertOne({
       celsius,
       humidity,
-      heatindex,
       room_id: new ObjectId(room_id),
       created_at: new Date(),
     });

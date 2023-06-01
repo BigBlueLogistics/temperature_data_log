@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "start:pm2": "pm2-runtime start pm2.config.js",
+    "start:prod": "npm run build && npm run start"
   },
   "dependencies": {
     "@microsoft/fetch-event-source": "^2.0.1",
@@ -20,6 +22,7 @@
     "eslint-config-next": "^13.4.1",
     "mongodb": "^5.3.0",
     "next": "^13.4.1",
+    "pm2": "^5.3.0",
     "postcss": "8.4.22",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

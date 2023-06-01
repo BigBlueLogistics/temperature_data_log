@@ -32,15 +32,14 @@ EXPOSE 3100
 
 CMD ["yarn","dev"]
 
-# TODO: execute only for production
-# current user should add to sudo groups and 
-# update the ownership of /${build_dir} folder to current user
 
 FROM main as app_prod
-ARG build_dir
 
-RUN mkdir -p ${build_dir}
-RUN chown node:node -R ${build_dir} && \
-    chmod 755 -R ${build_dir}
+ENV PORT=4100
+EXPOSE 4100
 
-CMD ["yarn","build"]
+RUN mkdir -p .next
+RUN chown node:node -R .next && \
+    chmod 777 -R .next
+
+CMD ["yarn","start:prod"]

@@ -5,18 +5,6 @@ networks:
     name: hawkeye_net
 
 services:
-  apphawkeye:
-    build:
-      context: ./app
-      dockerfile: Dockerfile
-      target: app_dev
-    container_name: apphawkeye
-    ports:
-      - "3100:3100"
-    volumes:
-      - ./app:/var/www/html
-    networks:
-      - hawkeye
   mongo_1:
     image: mongo:5.0.16
     container_name: mongo_1
@@ -41,6 +29,21 @@ services:
       - 3300:3300
     networks:
       - hawkeye
+  apphawkeye:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+      target: app_dev
+    container_name: apphawkeye
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./app:/var/www/html
+    depends_on:
+      - mongo_1
+      - mongo_2
+    networks:
+      - hawkeye
   jobhawkeye:
     build:
       context: ./jobs
@@ -49,5 +52,8 @@ services:
     container_name: jobhawkeye
     volumes:
       - ./jobs:/var/www/html
+    depends_on:
+      - mongo_1
+      - mongo_2
     networks:
       - hawkeye

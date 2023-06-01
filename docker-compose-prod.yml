@@ -1,0 +1,61 @@
+version: "3.9"
+
+networks:
+  hawkeye_prod:
+    name: hawkeye_net
+
+services:
+  mongo_1_prod:
+    image: mongo:5.0.16
+    container_name: mongo_1_prod
+    command: ["--replSet", "hawkeye-replset", "--bind_ip_all", "--port", "4200"]
+    restart: always
+    volumes:
+      - ./app/data/mongo_1_prod:/data/db
+    ports:
+      - 4200:4200
+    healthcheck:
+      test: test $$(echo "rs.initiate({_id:'hawkeye-replset',members:[{_id:0,host:\"mongo_1_prod:4200\"},{_id:1,host:\"mongo_2_prod:4300\"}]}).ok || rs.status().ok" | mongo --port 4200 --quiet) -eq 1
+      interval: 10s
+      start_period: 50s
+    networks:
+      - hawkeye_prod
+  mongo_2_prod:
+    image: mongo:5.0.16
+    container_name: mongo_2_prod
+    command: ["--replSet", "hawkeye-replset", "--bind_ip_all", "--port", "4300"]
+    restart: always
+    volumes:
+      - ./app/data/mongo_2_prod:/data/db
+    ports:
+      - 4300:4300
+    networks:
+      - hawkeye_prod
+  apphawkeye_prod:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+      target: app_prod
+    container_name: apphawkeye_prod
+    ports:
+      - "4100:4100"
+    volumes:
+      - ./app:/var/www/html
+    depends_on:
+      - mongo_1_prod
+      - mongo_2_prod
+    networks:
+      - hawkeye_prod
+  jobhawkeye_prod:
+    build:
+      context: ./jobs
+      dockerfile: Dockerfile
+      target: job_prod
+    container_name: jobhawkeye_prod
+    volumes:
+      - ./jobs:/var/www/html
+    depends_on:
+      - mongo_1_prod
+      - mongo_2_prod
+    networks:
+      - hawkeye_prod
