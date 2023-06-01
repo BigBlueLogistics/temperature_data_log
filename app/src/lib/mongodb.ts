@@ -11,7 +11,7 @@ let client;
 let mongodbInit: Promise<MongoClient>;
 
 if (!process.env.MONGODB_URI) {
-  throw new Error("Please add your Mongo URI to .env.local");
+  throw new Error("Please add your Mongo URI to .env");
 }
 
 if (process.env.NODE_ENV === "development") {
@@ -24,10 +24,7 @@ if (process.env.NODE_ENV === "development") {
   mongodbInit = global._mongoClientPromise;
 } else {
   // In production mode, it's best to not use a global variable.
-  client = new MongoClient(
-    "mongodb://mongo_1_prod:4200,mongo_2_prod:4300/?replicaSet=hawkeye-replset",
-    options
-  );
+  client = new MongoClient(uri, options);
   mongodbInit = client.connect();
 }
 
