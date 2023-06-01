@@ -29,12 +29,12 @@ services:
       - 3300:3300
     networks:
       - hawkeye
-  apphawkeye:
+  apptemp:
     build:
       context: ./app
       dockerfile: Dockerfile
       target: app_dev
-    container_name: apphawkeye
+    container_name: apptemp
     ports:
       - "3100:3100"
     volumes:
@@ -44,12 +44,12 @@ services:
       - mongo_2
     networks:
       - hawkeye
-  jobhawkeye:
+  jobtemp:
     build:
       context: ./jobs
       dockerfile: Dockerfile
       target: job_dev
-    container_name: jobhawkeye
+    container_name: jobtemp
     volumes:
       - ./jobs:/var/www/html
     depends_on:
