@@ -1,7 +1,7 @@
 version: "3.9"
 
 networks:
-  hawkeye_prod:
+  hawkeye:
     name: hawkeye_net
 
 services:
@@ -19,7 +19,7 @@ services:
       interval: 10s
       start_period: 50s
     networks:
-      - hawkeye_prod
+      - hawkeye
   mongo_2_prod:
     image: mongo:5.0.16
     container_name: mongo_2_prod
@@ -30,8 +30,8 @@ services:
     ports:
       - 4300:4300
     networks:
-      - hawkeye_prod
-  apptemp_prod:
+      - hawkeye
+  app_prod:
     build:
       context: ./app
       dockerfile: Dockerfile
@@ -45,8 +45,8 @@ services:
       - mongo_1_prod
       - mongo_2_prod
     networks:
-      - hawkeye_prod
-  jobtemp_prod:
+      - hawkeye
+  job_prod:
     build:
       context: ./jobs
       dockerfile: Dockerfile
@@ -58,4 +58,4 @@ services:
       - mongo_1_prod
       - mongo_2_prod
     networks:
-      - hawkeye_prod
+      - hawkeye

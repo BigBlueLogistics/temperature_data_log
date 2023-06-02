@@ -29,7 +29,7 @@ services:
       - 3300:3300
     networks:
       - hawkeye
-  apptemp:
+  app:
     build:
       context: ./app
       dockerfile: Dockerfile
@@ -44,7 +44,7 @@ services:
       - mongo_2
     networks:
       - hawkeye
-  jobtemp:
+  jobs:
     build:
       context: ./jobs
       dockerfile: Dockerfile
