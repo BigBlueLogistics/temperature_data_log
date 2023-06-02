@@ -27,6 +27,7 @@ services:
     restart: always
     volumes:
       - ./app/data/mongo_2_prod:/data/db
+      - /var/www/html/node_modules
     ports:
       - 4300:4300
     networks:
@@ -54,6 +55,7 @@ services:
     container_name: jobtemp_prod
     volumes:
       - ./jobs:/var/www/html
+      - /var/www/html/node_modules
     depends_on:
       - mongo_1_prod
       - mongo_2_prod
