@@ -14,56 +14,60 @@ const Gauge = dynamic(() => import("../Gauge"), {
 });
 
 function Stream({ initialTemp }: Props) {
+  console.log("initiTemp", initialTemp);
   const [listTemp, setTemp] = useState(initialTemp);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchEventSource("/api/watcher", {
-        method: "GET",
-        onopen(res) {
-          if (res.ok && res.status === 200) {
-            console.log("Connection success ", res);
-            return Promise.resolve();
-          } else {
-            console.log("Connection error ", res);
-            return Promise.reject();
-          }
-        },
-        onmessage(event) {
-          console.log("Event message: ", event.data);
-          const parsedData: ChangeStreamDocument<TStreamData> = JSON.parse(
-            event.data
-          );
+  const fetchData = async () => {
+    await fetchEventSource("/api/watcher", {
+      method: "GET",
+      onopen(res) {
+        if (res.ok && res.status === 200) {
+          console.log("Connection success ", res);
+          return Promise.resolve();
+        } else {
+          console.log("Connection error ", res);
+          return Promise.reject();
+        }
+      },
+      onmessage(event) {
+        console.log("Event message: ", event.data);
+        const parsedData: ChangeStreamDocument<TStreamData> = JSON.parse(
+          event.data
+        );
 
-          // Update the UI with the new data
-          if (parsedData.operationType === "insert") {
-            const { room_id, celsius, created_at } = parsedData.fullDocument;
+        // Update the UI with the new data
+        if (parsedData.operationType === "insert") {
+          const { room_id, celsius, created_at } = parsedData.fullDocument;
 
-            setTemp((prev) => ({
-              ...prev,
-              [room_id]: {
-                ...prev[room_id],
-                temperature: {
-                  celsius,
-                  created_at,
-                },
+          setTemp((prev) => ({
+            ...prev,
+            [room_id]: {
+              ...prev[room_id],
+              temperature: {
+                celsius: Number(celsius),
+                created_at,
               },
-            }));
-          }
-        },
-        onclose() {
-          console.log("Connection closed by the server");
-        },
-        onerror(err) {
-          console.log("There was an error from server", err);
-        },
-      });
-    };
+            },
+          }));
+        } else {
+          console.log(parsedData.operationType);
+        }
+      },
+      onclose() {
+        console.log("Connection closed by the server");
+      },
+      onerror(err) {
+        console.log("There was an error from server", err);
+      },
+    });
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
 
   const arrListTemp = Object.entries(listTemp);
+  console.log("arrListTemp", listTemp);
 
   return (
     <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 md:gap-y-4 md:gap-x-2 lg:text-left">
@@ -75,7 +79,8 @@ function Stream({ initialTemp }: Props) {
               className="group rounded-lg border border-transparent px-5 py-4 transition-colors border-gray-300 bg-gray-100 dark:border-neutral-700 dark:bg-neutral-800/30"
             >
               <h2 className={`${inter.className} mb-3 text-2xl font-semibold`}>
-                {item[1].name}
+                {item[1].name} <br />
+                {item[1]?.temperature?.celsius || 0}
               </h2>
               <Gauge
                 renderTo={`${item[0]}`}
@@ -83,7 +88,7 @@ function Stream({ initialTemp }: Props) {
                 height={200}
                 units={"°C"}
                 title={"Temperature"}
-                value={item[1].temperature?.celsius}
+                value={item[1].temperature?.celsius || 0}
                 minValue={0}
                 maxValue={40}
                 majorTicks={[40, 35, 30, 25, 20, 15, 10, 5, 0]}

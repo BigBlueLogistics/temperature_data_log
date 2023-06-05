@@ -2,7 +2,7 @@ export type Props = {
   initialTemp: {
     [key: string]: {
       name: string;
-      temperature: { celsius: number; created_at: Date } | null;
+      temperature: { celsius: number; created_at: Date };
     };
   };
 };
