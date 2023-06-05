@@ -18,7 +18,7 @@ function Stream({ initialTemp }: Props) {
   const [listTemp, setTemp] = useState(initialTemp);
 
   const fetchData = async () => {
-    await fetchEventSource("/api/watcher", {
+    await fetchEventSource("http://192.168.1.63:4100/api/watcher", {
       method: "GET",
       onopen(res) {
         if (res.ok && res.status === 200) {
