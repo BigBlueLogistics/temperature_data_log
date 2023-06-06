@@ -14,7 +14,6 @@ const Gauge = dynamic(() => import("../Gauge"), {
 });
 
 function Stream({ initialTemp }: Props) {
-  console.log("initiTemp", initialTemp);
   const [listTemp, setTemp] = useState(initialTemp);
 
   const fetchData = async () => {
@@ -67,7 +66,6 @@ function Stream({ initialTemp }: Props) {
   }, []);
 
   const arrListTemp = Object.entries(listTemp);
-  console.log("arrListTemp", listTemp);
 
   return (
     <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 md:gap-y-4 md:gap-x-2 lg:text-left">
@@ -79,8 +77,7 @@ function Stream({ initialTemp }: Props) {
               className="group rounded-lg border border-transparent px-5 py-4 transition-colors border-gray-300 bg-gray-100 dark:border-neutral-700 dark:bg-neutral-800/30"
             >
               <h2 className={`${inter.className} mb-3 text-2xl font-semibold`}>
-                {item[1].name} <br />
-                {item[1]?.temperature?.celsius || 0}
+                {item[1].name}
               </h2>
               <Gauge
                 renderTo={`${item[0]}`}
