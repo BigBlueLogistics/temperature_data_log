@@ -7,7 +7,7 @@ export type Props = {
   };
 };
 
-export type TStreamData = {
+export type TGaugeData = {
   _id: string;
   celsius: number;
   humidity: number;

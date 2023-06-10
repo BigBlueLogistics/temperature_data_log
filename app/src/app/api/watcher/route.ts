@@ -24,9 +24,10 @@ export async function GET() {
 
   return new NextResponse(responseStream.readable, {
     headers: {
-      "Content-Type": "text/event-stream",
       Connection: "keep-alive",
-      "Cache-Control": "no-cache, no-transform",
+      "Content-Encoding": "none",
+      "Cache-Control": "no-cache",
+      "Content-Type": "text/event-stream",
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET",
     },
