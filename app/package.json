@@ -11,7 +11,11 @@
     "start:prod": "npm run build && npm run start:pm2"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
     "@microsoft/fetch-event-source": "^2.0.1",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/material": "^5.13.4",
     "@types/canvas-gauges": "^2.1.4",
     "@types/node": "18.15.11",
     "@types/react": "18.0.35",
