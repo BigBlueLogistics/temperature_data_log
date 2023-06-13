@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense, useMemo } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { Unstable_Grid2 as Grid, Typography } from "@mui/material";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import { ChangeStreamDocument } from "mongodb";
@@ -35,16 +35,19 @@ function GaugeList({ initialTemp }: Props) {
           if (parsedData.operationType === "insert") {
             const { room_id, celsius, created_at } = parsedData.fullDocument;
 
-            setTemp((prev) => ({
-              ...prev,
-              [room_id]: {
-                ...prev[room_id],
-                temperature: {
-                  celsius: Number(celsius),
-                  created_at,
+            // If room exist update the temperature
+            if (listTemp && listTemp[room_id]) {
+              setTemp((prev) => ({
+                ...prev,
+                [room_id]: {
+                  ...prev[room_id],
+                  temperature: {
+                    celsius: Number(celsius),
+                    created_at,
+                  },
                 },
-              },
-            }));
+              }));
+            }
           } else {
             console.log(parsedData.operationType);
           }
