@@ -45,7 +45,10 @@ export async function POST(req: NextRequest) {
       created_at: new Date(),
     });
 
-    return NextResponse.json({ status: "succeeded", data: post });
+    return NextResponse.json(
+      { status: "succeeded", data: post },
+      { status: 500 }
+    );
   } catch (e) {
     return NextResponse.json(
       {
