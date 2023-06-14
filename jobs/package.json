@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "dev": "export NODE_ENV=development && pm2-dev start avg_temperature.js ",
+    "start:staging": "export NODE_ENV=staging && pm2-runtime start avg_temperature.js -i 3",
     "start:prod": "export NODE_ENV=production && pm2-runtime start avg_temperature.js -i 3"
   },
   "keywords": [

@@ -37,6 +37,8 @@ services:
       dockerfile: Dockerfile
       target: app_prod
     container_name: apptemp_prod
+    env_file:
+      - ./app/.env-production
     ports:
       - "4100:4100"
     volumes:
@@ -53,6 +55,8 @@ services:
       dockerfile: Dockerfile
       target: job_prod
     container_name: jobtemp_prod
+    env_file:
+      - ./jobs/.env-production
     volumes:
       - ./jobs:/var/www/html
       - /var/www/html/node_modules

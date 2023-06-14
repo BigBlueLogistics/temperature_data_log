@@ -7,7 +7,7 @@ COPY src ./src
 
 COPY public ./public
 
-COPY .env.* \
+COPY .env-* \
     package.json \
     yarn.lock* \
     global.d.ts \
@@ -39,15 +39,13 @@ COPY --from=builder $ROOT_APP_DIR ./
 
 FROM main as app_dev
 
-ENV PORT=3100
-EXPOSE 3100
-
 CMD ["yarn","dev"]
 
-FROM main as app_prod
+FROM main as app_staging
 
-ENV PORT=4100
-EXPOSE 4100
+CMD ["yarn", "start:staging"]
+
+FROM main as app_prod
 
 RUN mkdir -p .next
 RUN chown node:node -R .next && \

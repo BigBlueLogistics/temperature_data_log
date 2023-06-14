@@ -3,9 +3,10 @@ FROM node:18-slim as builder
 ARG ROOT_APP_DIR=/var/www/html
 WORKDIR $ROOT_APP_DIR
 
-COPY package.json yarn.lock* ./
-COPY avg_temperature.js .
-COPY .env.* .
+COPY package.json \ 
+    yarn.lock* \
+    avg_temperature.js \
+    .env-* ./
 
 RUN yarn install
 
@@ -31,6 +32,10 @@ COPY --from=builder $ROOT_APP_DIR ./
 FROM main as job_dev
 
 CMD ["yarn","dev"]
+
+FROM main as job_staging
+
+CMD [ "yarn", "start:staging" ]
 
 FROM main as job_prod
 
