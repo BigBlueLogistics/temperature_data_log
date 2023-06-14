@@ -3,10 +3,16 @@ FROM node:18-slim as builder
 ARG ROOT_APP_DIR=/var/www/html
 WORKDIR $ROOT_APP_DIR
 
+<<<<<<< HEAD
 COPY package.json \ 
     yarn.lock* \
     avg_temperature.js \
     .env-* ./
+=======
+COPY package.json yarn.lock* ./
+COPY avg_temperature.js .
+COPY .env.* .
+>>>>>>> 2d267340a69988cb5dd4f3943129b6de83669ba9
 
 RUN yarn install
 

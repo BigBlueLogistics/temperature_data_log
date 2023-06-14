@@ -7,7 +7,11 @@ COPY src ./src
 
 COPY public ./public
 
+<<<<<<< HEAD
 COPY .env-* \
+=======
+COPY .env.* \
+>>>>>>> 2d267340a69988cb5dd4f3943129b6de83669ba9
     package.json \
     yarn.lock* \
     global.d.ts \
@@ -41,9 +45,13 @@ FROM main as app_dev
 
 CMD ["yarn","dev"]
 
+<<<<<<< HEAD
 FROM main as app_staging
 
 CMD ["yarn", "start:staging"]
+=======
+FROM main as app_prod
+>>>>>>> 2d267340a69988cb5dd4f3943129b6de83669ba9
 
 FROM main as app_prod
 
