@@ -33,7 +33,8 @@ function GaugeList({ initialTemp }: Props) {
 
           // Update the UI with the new data
           if (parsedData.operationType === "insert") {
-            const { room_id, celsius, created_at } = parsedData.fullDocument;
+            const { room_id, celsius, humidity, created_at } =
+              parsedData.fullDocument;
 
             // If room exist update the temperature
             if (listTemp && listTemp[room_id]) {
@@ -43,6 +44,7 @@ function GaugeList({ initialTemp }: Props) {
                   ...prev[room_id],
                   temperature: {
                     celsius: Number(celsius),
+                    humidity: Number(humidity),
                     created_at,
                   },
                 },

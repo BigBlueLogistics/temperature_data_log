@@ -2,8 +2,9 @@
 
 import dynamic from "next/dynamic";
 import { Unstable_Grid2 as Grid } from "@mui/material";
+import WaterDropIcon from "@mui/icons-material/WaterDrop";
 import GaugeSkeleton from "@/components/GaugeSkeleton";
-import { GridWrapper, Title } from "./elements";
+import { GridWrapper, Title, TitleRH, Humidity } from "./elements";
 import { TGaugeItem } from "./types";
 
 const Gauge = dynamic(() => import("../Gauge"), {
@@ -68,6 +69,11 @@ function GaugeItem({ data }: TGaugeItem) {
           animationDuration={10000}
           animationRule="linear"
         />
+        <TitleRH>
+          <WaterDropIcon />
+          RH:
+          <Humidity>{data[1].temperature?.humidity || 0}</Humidity>%
+        </TitleRH>
       </GridWrapper>
     </Grid>
   );
