@@ -1,25 +1,41 @@
-import { Inter } from "next/font/google";
-import { LayoutType } from "./types";
+"use client";
 
-const inter = Inter({ subsets: ["latin"] });
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { ThemeProvider, CssBaseline, Container, Toolbar } from "@mui/material";
+import theme from "@/assets/theme/base";
+import TopNavbar from "@/components/TopNavbar";
+import Sidebar from "@/components/Sidebar";
+import { Main } from "./elements";
+import { TLayout } from "./types";
 
-function Layout({ children }: LayoutType) {
+function Layout({ menuList, children }: TLayout) {
+  const router = useRouter();
+  const [openDrawer, setOpenDrawer] = useState(false);
+
+  const onDrawer = () => {
+    setOpenDrawer((prev) => !prev);
+  };
+
+  useEffect(() => {
+    if (menuList.length) {
+      const defaultPage = `/temperature/${menuList[0].tag_id}`;
+      router.replace(defaultPage);
+    }
+  }, [menuList, router]);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-start p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            BBLC WH06
-          </a>
-        </div>
-      </div>
-      {children}
-    </main>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Main>
+        <Sidebar menuList={menuList} open={openDrawer} onClose={onDrawer} />
+        <TopNavbar onDrawer={onDrawer} />
+        <Container sx={{ paddingY: 5 }}>
+          <Toolbar />
+          {children}
+        </Container>
+      </Main>
+    </ThemeProvider>
   );
 }
 

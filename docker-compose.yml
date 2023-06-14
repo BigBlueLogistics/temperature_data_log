@@ -35,6 +35,8 @@ services:
       dockerfile: Dockerfile
       target: app_dev
     container_name: apptemp
+    env_file:
+      - ./app/.env-development
     ports:
       - "3100:3100"
     volumes:
@@ -50,6 +52,8 @@ services:
       dockerfile: Dockerfile
       target: job_dev
     container_name: jobtemp
+    env_file:
+      - ./jobs/.env-development
     volumes:
       - ./jobs:/var/www/html
     depends_on:

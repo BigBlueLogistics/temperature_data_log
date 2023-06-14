@@ -2,12 +2,12 @@ export type Props = {
   initialTemp: {
     [key: string]: {
       name: string;
-      temperature: { celsius: number; created_at: Date };
+      temperature: { celsius: number; humidity: number; created_at: Date };
     };
   };
 };
 
-export type TStreamData = {
+export type TGaugeData = {
   _id: string;
   celsius: number;
   humidity: number;

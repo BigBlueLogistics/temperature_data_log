@@ -1,3 +1,6 @@
 import { ReactNode } from "react";
 
-export type LayoutType = { children: ReactNode };
+export type TLayout = {
+  menuList: { name: string; tag_id: string }[];
+  children: ReactNode;
+};

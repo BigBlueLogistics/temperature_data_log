@@ -1,0 +1,67 @@
+version: "3.9"
+
+networks:
+  hawkeye:
+    name: hawkeye_net
+
+services:
+  mongo_1_staging:
+    image: mongo:5.0.16
+    container_name: mongo_1_staging
+    command: ["--replSet", "hawkeye-replset", "--bind_ip_all", "--port", "5200"]
+    restart: always
+    volumes:
+      - ./app/data/mongo_1_staging:/data/db
+    ports:
+      - 5200:5200
+    healthcheck:
+      test: test $$(echo "rs.initiate({_id:'hawkeye-replset',members:[{_id:0,host:\"mongo_1_staging:5200\"},{_id:1,host:\"mongo_2_staging:5300\"}]}).ok || rs.status().ok" | mongo --port 5200 --quiet) -eq 1
+      interval: 10s
+      start_period: 50s
+    networks:
+      - hawkeye
+  mongo_2_staging:
+    image: mongo:5.0.16
+    container_name: mongo_2_staging
+    command: ["--replSet", "hawkeye-replset", "--bind_ip_all", "--port", "5300"]
+    restart: always
+    volumes:
+      - ./app/data/mongo_2_staging:/data/db
+    ports:
+      - 5300:5300
+    networks:
+      - hawkeye
+  app_staging:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+      target: app_staging
+    container_name: apptemp_staging
+    env_file:
+      - ./app/.env-staging
+    ports:
+      - "5100:5100"
+    volumes:
+      - ./app:/var/www/html
+      - /var/www/html/node_modules
+    depends_on:
+      - mongo_1_staging
+      - mongo_2_staging
+    networks:
+      - hawkeye
+  job_staging:
+    build:
+      context: ./jobs
+      dockerfile: Dockerfile
+      target: job_staging
+    container_name: jobtemp_staging
+    env_file:
+      - ./jobs/.env-staging
+    volumes:
+      - ./jobs:/var/www/html
+      - /var/www/html/node_modules
+    depends_on:
+      - mongo_1_staging
+      - mongo_2_staging
+    networks:
+      - hawkeye
