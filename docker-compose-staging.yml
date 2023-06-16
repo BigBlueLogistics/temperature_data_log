@@ -37,6 +37,7 @@ services:
       dockerfile: Dockerfile
       target: app_staging
     container_name: apptemp_staging
+    restart: always
     env_file:
       - ./app/.env-staging
     ports:
@@ -55,6 +56,7 @@ services:
       dockerfile: Dockerfile
       target: job_staging
     container_name: jobtemp_staging
+    restart: always
     env_file:
       - ./jobs/.env-staging
     volumes:
