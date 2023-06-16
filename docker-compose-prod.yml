@@ -37,6 +37,7 @@ services:
       dockerfile: Dockerfile
       target: app_prod
     container_name: apptemp_prod
+    restart: always
     env_file:
       - ./app/.env-production
     ports:
@@ -55,6 +56,7 @@ services:
       dockerfile: Dockerfile
       target: job_prod
     container_name: jobtemp_prod
+    restart: always
     env_file:
       - ./jobs/.env-production
     volumes:
