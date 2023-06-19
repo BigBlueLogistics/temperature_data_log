@@ -35,6 +35,8 @@ services:
       dockerfile: Dockerfile
       target: app_dev
     container_name: apptemp
+    stdin_open: true
+    tty: true
     env_file:
       - ./app/.env-development
     ports:
@@ -52,6 +54,8 @@ services:
       dockerfile: Dockerfile
       target: job_dev
     container_name: jobtemp
+    stdin_open: true
+    tty: true
     env_file:
       - ./jobs/.env-development
     volumes:
