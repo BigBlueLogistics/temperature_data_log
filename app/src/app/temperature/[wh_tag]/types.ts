@@ -1,3 +1,3 @@
-export type TTemperature = {
+export type TPropsTemperature = {
   params: { wh_tag: string };
 };

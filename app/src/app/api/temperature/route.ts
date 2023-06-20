@@ -1,13 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import mongodbInit from "@/lib/mongodb";
-import { Document, ObjectId } from "mongodb";
+import { ObjectId } from "mongodb";
 import { getErrorMessage } from "@/utils";
-
-type TData = {
-  data?: Document[];
-  status?: "succeeded" | "error";
-  message?: string;
-};
 
 export async function GET() {
   try {
@@ -45,10 +39,7 @@ export async function POST(req: NextRequest) {
       created_at: new Date(),
     });
 
-    return NextResponse.json(
-      { status: "succeeded", data: post },
-      { status: 500 }
-    );
+    return NextResponse.json({ status: "succeeded", data: post });
   } catch (e) {
     return NextResponse.json(
       {
