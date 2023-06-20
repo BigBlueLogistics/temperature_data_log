@@ -1,8 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { TColumnFields } from "./types";
+import { ReportEntity } from "@/entities/reports";
 
 export default function miscData() {
-  const columns: ColumnDef<TColumnFields>[] = [
+  const columns: ColumnDef<ReportEntity>[] = [
     {
       id: "location",
       accessorKey: "location",

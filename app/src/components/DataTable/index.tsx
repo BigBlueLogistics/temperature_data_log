@@ -39,7 +39,7 @@ function DataTable({ data, columns }: TPropsDataTable) {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <TableContainer component={Paper}>
+      <TableContainer>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             {table &&

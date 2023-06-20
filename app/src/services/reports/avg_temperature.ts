@@ -1,4 +1,5 @@
 import mongodbInit from "@/lib/mongodb";
+import { ReportEntity } from "@/entities/reports";
 
 type TAvgTemperature = {
   fromDate?: Date;
@@ -29,7 +30,7 @@ export default async function avg_temperature({
 
   const reportAvgTemp = await db
     .collection("avg_temperature")
-    .aggregate([
+    .aggregate<ReportEntity>([
       {
         $lookup: {
           from: "room",
