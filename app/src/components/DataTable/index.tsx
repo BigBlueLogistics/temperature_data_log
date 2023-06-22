@@ -10,7 +10,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TablePagination from "@mui/material/TablePagination";
 import InputBase from "@mui/material/InputBase";
-import Paper from "@mui/material/Paper";
 import {
   Column,
   Table as ReactTable,
@@ -68,7 +67,7 @@ function DataTable({ data, columns }: TPropsDataTable) {
               ))}
           </TableHead>
           <TableBody>
-            {table &&
+            {table && data.length ? (
               table.getRowModel().rows.map((row) => {
                 return (
                   <TableRow key={row.id}>
@@ -84,7 +83,17 @@ function DataTable({ data, columns }: TPropsDataTable) {
                     })}
                   </TableRow>
                 );
-              })}
+              })
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  sx={{ textAlign: "center" }}
+                >
+                  No data available.
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </TableContainer>

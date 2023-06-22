@@ -1,17 +1,17 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ReportEntity } from "@/entities/reports";
+import { AvgTempEntity } from "@/entities/avgTemperature";
 
 export default function miscData() {
-  const columns: ColumnDef<ReportEntity>[] = [
-    {
-      id: "location",
-      accessorKey: "location",
-      header: "Location",
-    },
+  const columns: ColumnDef<AvgTempEntity>[] = [
     {
       id: "warehouse",
       accessorKey: "warehouse",
       header: "Warehouse",
+    },
+    {
+      id: "location",
+      accessorKey: "location",
+      header: "Location",
     },
     {
       id: "celsius",
@@ -29,5 +29,3 @@ export default function miscData() {
     columns,
   };
 }
-
-// export const data = JSON.stringify(miscData());

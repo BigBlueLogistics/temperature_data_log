@@ -1,29 +1,27 @@
-import dynamic from "next/dynamic";
-import { avgTemperature } from "@/services";
+"use client";
+
+import { useState } from "react";
+import ReportsTemplate from "@/components/ReportsTemplate";
+import getAvgTemp from "@/services/reports/avg_temperature";
 import { TPropsReports } from "./types";
 import miscData from "./miscData";
 
-const ReportsTemplate = dynamic(
-  () => import("../../components/ReportsTemplate"),
-  {
-    ssr: false,
-  }
-);
-
-async function Reports({ searchParams }: TPropsReports) {
+function Reports({ searchParams }: TPropsReports) {
   const { columns } = miscData();
-  const { warehouseNo, roomId, fromDate, toDate } = searchParams || {};
-  const dataTemp = await avgTemperature({
-    warehouseNo,
-    roomId,
-    fromDate,
-    toDate,
-  });
+  const { warehouseNo, location, recordedAt } = searchParams || {};
 
-  // console.log("searchParams!!", searchParams);
-  // console.log("datas!!!", columns);
+  const [reportsData, setReportsData] = useState<any[]>([]);
 
-  return <ReportsTemplate data={dataTemp} columns={columns} />;
+  const onFilter = async (arg: TPropsReports["searchParams"]) => {
+    const res = await getAvgTemp(arg);
+    if (res.status === "succeeded") {
+      setReportsData(res.data);
+    }
+  };
+
+  return (
+    <ReportsTemplate data={reportsData} columns={columns} onFilter={onFilter} />
+  );
 }
 
 export default Reports;

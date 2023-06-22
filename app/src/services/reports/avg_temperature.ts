@@ -1,75 +1,21 @@
-import mongodbInit from "@/lib/mongodb";
-import { ReportEntity } from "@/entities/reports";
+import { ResponseAvgTempEntity } from "@/entities/avgTemperature";
 
-type TAvgTemperature = {
-  fromDate?: Date;
-  toDate?: Date;
+type FilterParams = {
+  recordedAt?: [Date, Date];
   roomId?: string;
   warehouseNo?: string;
 };
 
-export default async function avg_temperature({
-  fromDate,
-  toDate,
-  roomId,
-  warehouseNo,
-}: TAvgTemperature) {
-  const conn = await mongodbInit;
-  const db = conn.db(process.env.DB_NAME);
+export default async function getAvgTemp(
+  arg: FilterParams
+): Promise<ResponseAvgTempEntity> {
+  const queryP = new URLSearchParams(arg as Record<string, string>).toString();
+  const dataTemp = await fetch(`http://localhost:3100/api/reports?${queryP}`, {
+    method: "GET",
+  });
 
-  let $matchQuery = {};
-  if (fromDate && toDate) {
-    $matchQuery = { created_at: { $gte: fromDate, $lte: toDate } };
+  if (!dataTemp.ok) {
+    throw new Error("Failed to fetch reports data");
   }
-  if (roomId) {
-    $matchQuery = { ...$matchQuery, room_id: roomId };
-  }
-  if (warehouseNo) {
-    $matchQuery = { ...$matchQuery, warehouse: warehouseNo };
-  }
-
-  const reportAvgTemp = await db
-    .collection("avg_temperature")
-    .aggregate<ReportEntity>([
-      {
-        $lookup: {
-          from: "room",
-          localField: "room_id",
-          foreignField: "_id",
-          pipeline: [
-            // {
-            //   $match: {
-            //     warehouse_tag: "bb07",
-            //   },
-            // },
-            {
-              $project: {
-                _id: 0,
-                name: 1,
-                warehouse_tag: 1,
-              },
-            },
-          ],
-          as: "room",
-        },
-      },
-      { $unwind: "$room" },
-      {
-        $project: {
-          _id: 0,
-          celsius: 1,
-          warehouse: "$room.warehouse_tag",
-          location: "$room.name",
-          created_at: 1,
-        },
-      },
-      {
-        $match: {
-          $and: [$matchQuery],
-        },
-      },
-    ])
-    .toArray();
-
-  return reportAvgTemp;
+  return await dataTemp.json();
 }

@@ -1,6 +1,7 @@
 import Layout from "@/components/Layout";
 import { Inter } from "next/font/google";
 import { listWarehouse } from "@/services";
+import "react-datepicker/dist/react-datepicker.css";
 
 export const inter = Inter({
   weight: ["300", "400", "500", "700"],

@@ -2,73 +2,76 @@ import { NextRequest, NextResponse } from "next/server";
 import mongodbInit from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { getErrorMessage } from "@/utils";
+import { AvgTempEntity } from "@/entities/avgTemperature";
 
 export async function GET(req: NextRequest) {
   try {
     const query = req.nextUrl.searchParams;
-    const roomId = query.has("roomId")
-      ? new ObjectId(query.get("roomId") as string)
+
+    const location = query.has("location")
+      ? new ObjectId(query.get("location") as string)
       : undefined;
-    const fromDate = query.has("from")
-      ? new Date(query.get("from") as string)
+    const recordedAt = query.has("recordedAt")
+      ? JSON.parse(query.get("recordedAt") as string)
       : undefined;
-    const toDate = query.has("to")
-      ? new Date(query.get("to") as string)
-      : undefined;
-    const warehouseNo = query.has("warehouse")
-      ? query.get("warehouse")
+    const warehouseNo = query.has("warehouseNo")
+      ? query.get("warehouseNo")
       : undefined;
     const client = await mongodbInit;
     const db = client.db(process.env.DB_NAME);
 
-    let $matchQuery = {};
-    if (fromDate && toDate) {
-      $matchQuery = { created_at: { $gte: fromDate, $lte: toDate } };
+    let avgTempQuery = {};
+    let roomQuery = {};
+    if (recordedAt) {
+      const [fromDate, toDate] = recordedAt as [Date, Date];
+      avgTempQuery = {
+        created_at: { $gte: new Date(fromDate), $lte: new Date(toDate) },
+      };
     }
-    if (roomId) {
-      $matchQuery = { ...$matchQuery, room_id: roomId };
+    if (location) {
+      roomQuery = { ...roomQuery, _id: location };
     }
     if (warehouseNo) {
-      $matchQuery = { ...$matchQuery, warehouse: warehouseNo };
+      roomQuery = { ...roomQuery, warehouse_tag: warehouseNo };
     }
 
     const reportAvgTemp = await db
       .collection("avg_temperature")
-      .aggregate([
+      .aggregate<AvgTempEntity>([
         {
           $lookup: {
             from: "room",
             localField: "room_id",
             foreignField: "_id",
             pipeline: [
-              // {
-              //   $match: {
-              //     warehouse_tag: "bb07",
-              //   },
-              // },
+              {
+                $match: {
+                  ...roomQuery,
+                },
+              },
               {
                 $project: {
-                  _id: 0,
                   name: 1,
                   warehouse_tag: 1,
                 },
               },
             ],
-            as: "room",
+            as: "location",
           },
         },
-        { $unwind: "$room" },
+        { $unwind: "$location" },
         {
           $project: {
+            _id: 0,
             celsius: 1,
-            warehouse: "$room.warehouse_tag",
-            location: "$room.name",
+            warehouse: "$location.warehouse_tag",
+            location: "$location.name",
             created_at: 1,
           },
         },
         {
           $match: {
-            $and: [$matchQuery],
+            ...avgTempQuery,
           },
         },
       ])

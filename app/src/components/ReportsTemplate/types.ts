@@ -1,13 +1,17 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ReportEntity } from "@/entities/reports";
+import { AvgTempEntity } from "@/entities/avgTemperature";
+import { LocationEntity } from "@/entities/location";
 import { WarehouseEntity } from "@/entities/warehouse";
+import { TPropsReports } from "@/app/reports/types";
 
 export type TPropsReportsTemplate = {
-  data: ReportEntity[];
-  columns: ColumnDef<ReportEntity>[];
+  data: AvgTempEntity[];
+  columns: ColumnDef<AvgTempEntity>[];
+  onFilter: (keys: TPropsReports["searchParams"]) => void;
 };
 
 export type TFilterValues = {
-  location: object | null;
-  warehouse: WarehouseEntity | null;
+  location: LocationEntity | null;
+  warehouseNo: WarehouseEntity | null;
+  recordedAt: [Date, Date] | null;
 };
