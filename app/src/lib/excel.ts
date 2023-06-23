@@ -1,8 +1,4 @@
 import Excel from "exceljs";
-//Required:
-// data
-// filename
-// sheetname = optional
 
 type TExcel = {
   data: Record<string, any>[];

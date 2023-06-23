@@ -8,7 +8,7 @@ import Sidebar from "@/components/Sidebar";
 import { Main } from "./elements";
 import { TLayout } from "./types";
 
-function Layout({ menuList, children }: TLayout) {
+function Layout({ children }: TLayout) {
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const onDrawer = () => {
@@ -19,7 +19,7 @@ function Layout({ menuList, children }: TLayout) {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Main>
-        <Sidebar menuList={menuList} open={openDrawer} onClose={onDrawer} />
+        <Sidebar open={openDrawer} onClose={onDrawer} />
         <TopNavbar onDrawer={onDrawer} />
         <Container sx={{ paddingY: 5 }}>
           <Toolbar />

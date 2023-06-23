@@ -1,6 +1,5 @@
 import Layout from "@/components/Layout";
 import { Inter } from "next/font/google";
-import { listWarehouse } from "@/services";
 import "react-datepicker/dist/react-datepicker.css";
 
 export const inter = Inter({
@@ -15,16 +14,15 @@ export const metadata = {
   description: "BigBlue temperature monitoring",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const warehouseData = await listWarehouse();
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Layout menuList={warehouseData}>{children}</Layout>
+        <Layout>{children}</Layout>
       </body>
     </html>
   );

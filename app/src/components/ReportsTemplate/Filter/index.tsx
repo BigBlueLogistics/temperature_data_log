@@ -86,12 +86,7 @@ function Filter({
 
   const DateInput = forwardRef<HTMLDivElement, TextFieldProps>(
     ({ value, onClick }, ref) => (
-      <TextField
-        label="Coverage Date"
-        onClick={onClick}
-        ref={ref}
-        value={value}
-      />
+      <TextField label="Dates" onClick={onClick} ref={ref} value={value} />
     )
   );
   return (

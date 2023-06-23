@@ -1,6 +1,6 @@
 import mongodbInit from "@/lib/mongodb";
 
-type TWarehouse = { name: string; tag_id: string };
+type TWarehouse = { name: string; tag_id: string; is_delete: Boolean };
 
 export default async function list() {
   const conn = await mongodbInit;
@@ -8,7 +8,7 @@ export default async function list() {
 
   const warehouse = await db
     .collection<TWarehouse>("warehouse")
-    .find()
+    .find({ is_delete: false })
     .project<TWarehouse>({ _id: 0, name: true, tag_id: true })
     .toArray();
 
