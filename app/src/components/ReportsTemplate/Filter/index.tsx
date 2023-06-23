@@ -9,12 +9,12 @@ import {
 import AutocompleteLocation from "../AutocompleteLocation";
 import AutocompleteWarehouse from "../AutocompleteWarehouse";
 import DatePicker from "react-datepicker";
-import { LocationEntity } from "@/entities/location";
-import { WarehouseEntity } from "@/entities/warehouse";
 import { TPropsFilter } from "./types";
 
 function Filter({
   values,
+  warehouseList,
+  locationList,
   onWarehouse,
   onLocation,
   onRecordedAt,
@@ -48,47 +48,13 @@ function Filter({
     return filterValues;
   };
 
-  const DUMMY_WH: WarehouseEntity[] = [
-    {
-      _id: "11116" as any,
-      name: "BB06",
-      tag_id: "bb06",
-    },
-    {
-      _id: "11117" as any,
-      name: "BB07",
-      tag_id: "bb07",
-    },
-    {
-      _id: "11118" as any,
-      name: "BB08",
-      tag_id: "bb08",
-    },
-  ];
-
-  const DUMMY_LOC: LocationEntity[] = [
-    {
-      _id: "647832fd02b564abe05016f4" as any,
-      name: "Chiller 3",
-      warehouse_tag: "bb06",
-    },
-    {
-      _id: "647832fd02b564abe05016f5" as any,
-      name: "Chiller 4",
-      warehouse_tag: "bb06",
-    },
-    {
-      _id: "647832fd02b564abe05016f6" as any,
-      name: "Chiller 5",
-      warehouse_tag: "bb07",
-    },
-  ];
-
   const DateInput = forwardRef<HTMLDivElement, TextFieldProps>(
     ({ value, onClick }, ref) => (
       <TextField label="Dates" onClick={onClick} ref={ref} value={value} />
     )
   );
+  DateInput.displayName = "DateInput";
+
   return (
     <Box
       sx={{
@@ -101,14 +67,14 @@ function Filter({
       <Grid container spacing={2}>
         <Grid>
           <AutocompleteWarehouse
-            options={DUMMY_WH}
+            options={warehouseList}
             onChange={onWarehouse}
             value={values.warehouseNo}
           />
         </Grid>
         <Grid>
           <AutocompleteLocation
-            options={DUMMY_LOC}
+            options={locationList}
             onChange={onLocation}
             value={values.location}
           />

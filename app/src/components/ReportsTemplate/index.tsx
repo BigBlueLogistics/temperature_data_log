@@ -1,71 +1,23 @@
 "use client";
 
-import { useState } from "react";
-import {
-  Box,
-  Button,
-  Paper,
-  AutocompleteChangeReason,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Paper, Typography } from "@mui/material";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import DataTable from "@/components/DataTable";
 import Filter from "./Filter";
-import { TFilterValues, TPropsReportsTemplate } from "./types";
-import { LocationEntity } from "@/entities/location";
-import { WarehouseEntity } from "@/entities/warehouse";
+import { TPropsReportsTemplate } from "./types";
 
 function ReportsTemplate({
   columns,
   data,
+  warehouseList,
+  locationList,
+  filterValues,
+  onLocation,
+  onWarehouse,
+  onRecordedAt,
   onFilter,
   onExport,
 }: TPropsReportsTemplate) {
-  const [filterValues, setFilterValues] = useState<TFilterValues>({
-    location: null,
-    warehouseNo: null,
-    recordedAt: null,
-  });
-
-  const onLocation = (
-    value: LocationEntity | null,
-    reason: AutocompleteChangeReason
-  ) => {
-    setFilterValues((prev) => {
-      if (reason === "selectOption") {
-        return { ...prev, location: value };
-      } else if (reason === "clear") {
-        return { ...prev, location: null };
-      }
-      return prev;
-    });
-  };
-
-  const onWarehouse = (
-    value: WarehouseEntity | null,
-    reason: AutocompleteChangeReason
-  ) => {
-    setFilterValues((prev) => {
-      if (reason === "selectOption") {
-        return { ...prev, warehouseNo: value };
-      } else if (reason === "clear") {
-        return { ...prev, warehouseNo: null };
-      }
-      return prev;
-    });
-  };
-
-  const onRecordedAt = (dates: [Date, Date] | null) => {
-    let dateRange = dates;
-    if (dateRange && dateRange.every((value) => value === null)) {
-      dateRange = null;
-    }
-    setFilterValues((prev) => ({
-      ...prev,
-      recordedAt: dateRange,
-    }));
-  };
-
   return (
     <Box component={Paper} sx={{ display: "flex", flexDirection: "column" }}>
       <Box
@@ -105,6 +57,8 @@ function ReportsTemplate({
 
       <Filter
         values={filterValues}
+        warehouseList={warehouseList}
+        locationList={locationList}
         onWarehouse={onWarehouse}
         onLocation={onLocation}
         onRecordedAt={onRecordedAt}

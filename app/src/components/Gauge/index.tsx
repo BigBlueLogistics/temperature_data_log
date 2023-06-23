@@ -13,7 +13,7 @@ function Gauge(props: RadialGaugeOptions) {
         ...props,
         renderTo: canvasRef.current,
         animation: false,
-        fontValueSize: 38,
+        fontValueSize: 45,
       }).draw();
     }
 

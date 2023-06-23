@@ -2,12 +2,12 @@
 
 import { Box, AppBar, Toolbar, IconButton, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import ElevationScroll from "./ElevationScroll";
 import { TTopNavbar } from "./types";
 
 function TopNavbar({ onDrawer }: TTopNavbar) {
-  const { wh_tag } = useParams();
+  const path = usePathname().replace(/\//g, " ");
 
   return (
     <ElevationScroll>
@@ -23,7 +23,7 @@ function TopNavbar({ onDrawer }: TTopNavbar) {
               textTransform="uppercase"
               marginLeft={{ md: 6, sm: 2 }}
             >
-              Warehouse {wh_tag}
+              {path}
             </Typography>
           </Toolbar>
         </AppBar>
