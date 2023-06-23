@@ -8,6 +8,10 @@ export type TPropsReportsTemplate = {
   data: AvgTempEntity[];
   columns: ColumnDef<AvgTempEntity>[];
   onFilter: (keys: TPropsReports["searchParams"]) => void;
+  onExport: (
+    warehouse: string | undefined,
+    location: string | undefined
+  ) => void;
 };
 
 export type TFilterValues = {

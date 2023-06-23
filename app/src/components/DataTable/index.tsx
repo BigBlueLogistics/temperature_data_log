@@ -116,7 +116,7 @@ function DataTable({ data, columns }: TPropsDataTable) {
         }}
         ActionsComponent={TablePaginationActions}
       />
-      <pre>{JSON.stringify(table.getState().pagination, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(table.getState().pagination, null, 2)}</pre> */}
     </Box>
   );
 }

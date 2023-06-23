@@ -15,7 +15,12 @@ import { TFilterValues, TPropsReportsTemplate } from "./types";
 import { LocationEntity } from "@/entities/location";
 import { WarehouseEntity } from "@/entities/warehouse";
 
-function ReportsTemplate({ columns, data, onFilter }: TPropsReportsTemplate) {
+function ReportsTemplate({
+  columns,
+  data,
+  onFilter,
+  onExport,
+}: TPropsReportsTemplate) {
   const [filterValues, setFilterValues] = useState<TFilterValues>({
     location: null,
     warehouseNo: null,
@@ -84,7 +89,16 @@ function ReportsTemplate({ columns, data, onFilter }: TPropsReportsTemplate) {
           </Typography>
           records found.
         </Typography>
-        <Button startIcon={<FileDownloadIcon />} variant="text">
+        <Button
+          startIcon={<FileDownloadIcon />}
+          variant="text"
+          onClick={() =>
+            onExport(
+              filterValues.warehouseNo?.name,
+              filterValues.location?.name
+            )
+          }
+        >
           Export
         </Button>
       </Box>

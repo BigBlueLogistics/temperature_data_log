@@ -36,7 +36,6 @@ function Filter({
       filterValues = { ...filterValues, location: values.location._id };
     }
     if (values.recordedAt?.length) {
-      console.log("recordedat", values);
       const formatRecordedAt = [
         values.recordedAt[0].toLocaleString(),
         values.recordedAt[1].toLocaleString(),
@@ -87,7 +86,12 @@ function Filter({
 
   const DateInput = forwardRef<HTMLDivElement, TextFieldProps>(
     ({ value, onClick }, ref) => (
-      <TextField label="Dates" onClick={onClick} ref={ref} value={value} />
+      <TextField
+        label="Coverage Date"
+        onClick={onClick}
+        ref={ref}
+        value={value}
+      />
     )
   );
   return (
