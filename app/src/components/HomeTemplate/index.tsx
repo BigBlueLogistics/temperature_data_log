@@ -39,7 +39,7 @@ export default function HomeTemplate({ warehouseList }: TPropsHomeTemplate) {
           },
         })}
       >
-        {warehouseList ? (
+        {warehouseList && warehouseList.length ? (
           warehouseList.map(({ tag_id, name }) => (
             <WarehouseItem
               key={tag_id}

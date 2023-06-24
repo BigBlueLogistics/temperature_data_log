@@ -11,7 +11,12 @@ export async function GET() {
     const warehouse = await db
       .collection<WarehouseEntity>("warehouse")
       .find({ is_delete: false })
-      .project<WarehouseEntity>({ _id: 0, name: true, tag_id: true })
+      .project<WarehouseEntity>({
+        _id: 0,
+        name: true,
+        tag_id: true,
+        is_delete: true,
+      })
       .toArray();
 
     return NextResponse.json({ status: "succeeded", data: warehouse });
