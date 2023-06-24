@@ -7,7 +7,13 @@ import ElevationScroll from "./ElevationScroll";
 import { TTopNavbar } from "./types";
 
 function TopNavbar({ onDrawer }: TTopNavbar) {
-  const path = usePathname().replace(/\//g, " ");
+  const path = usePathname();
+  let headerTitle = "";
+  if (path === "/") {
+    headerTitle = "Home";
+  } else {
+    headerTitle = path.replace(/\//g, " ");
+  }
 
   return (
     <ElevationScroll>
@@ -23,7 +29,7 @@ function TopNavbar({ onDrawer }: TTopNavbar) {
               textTransform="uppercase"
               marginLeft={{ md: 6, sm: 2 }}
             >
-              {path}
+              {headerTitle}
             </Typography>
           </Toolbar>
         </AppBar>

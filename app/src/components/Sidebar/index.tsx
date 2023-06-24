@@ -17,6 +17,8 @@ import {
   ExpandMore,
   Warehouse,
   Dataset,
+  Home,
+  Thermostat,
 } from "@mui/icons-material";
 import { bblogo } from "@/assets/images";
 import { TSidebar, TMenuList } from "./types";
@@ -28,12 +30,12 @@ function Sidebar({ open, onClose }: TSidebar) {
   );
   const menuList: TMenuList[] = [
     {
-      link: "/reports",
-      main: { title: "Reports", icon: <Dataset /> },
+      link: "/",
+      main: { title: "Home", icon: <Home /> },
     },
     {
       link: "/#",
-      main: { title: "Warehouse", icon: <Warehouse /> },
+      main: { title: "Temperature", icon: <Thermostat /> },
       options: [
         {
           link: "/temperature/bb05",
@@ -46,6 +48,10 @@ function Sidebar({ open, onClose }: TSidebar) {
           icon: <Warehouse />,
         },
       ],
+    },
+    {
+      link: "/reports",
+      main: { title: "Reports", icon: <Dataset /> },
     },
   ];
   const router = useRouter();

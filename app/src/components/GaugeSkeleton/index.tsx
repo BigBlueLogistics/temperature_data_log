@@ -1,7 +1,14 @@
+import { Box, Skeleton } from "@mui/material";
+
 export default function GaugeSkeleton() {
   return (
-    <div className="flex space-x-4 animate-pulse">
-      <div className="rounded-full bg-slate-200 dark:bg-slate-700 h-40 w-40" />
-    </div>
+    <Box>
+      <Skeleton
+        variant="circular"
+        width={200}
+        height={200}
+        sx={{ bgcolor: "grey.900" }}
+      />
+    </Box>
   );
 }
