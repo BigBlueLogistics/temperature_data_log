@@ -10,6 +10,7 @@ export default async function list({ warehouseSlug }: TList) {
   const room = await db
     .collection<TRooms>("room")
     .find({ warehouse_tag: warehouseSlug })
+    .sort({ order: 1 })
     .toArray();
 
   const objRoom = room.reduce((prev, current) => {

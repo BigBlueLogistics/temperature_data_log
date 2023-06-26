@@ -16,6 +16,7 @@ export async function GET(req: NextRequest) {
     const room = await db
       .collection<LocationEntity>("room")
       .find(findQuery)
+      .sort({ order: 1 })
       .toArray();
 
     return NextResponse.json({ status: "succeeded", data: room });
