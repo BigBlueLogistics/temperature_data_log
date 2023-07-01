@@ -3,6 +3,7 @@ import mongodbInit from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { getErrorMessage } from "@/utils";
 import { AvgTempEntity } from "@/entities/avgTemperature";
+import { format } from "date-fns";
 
 export async function GET(req: NextRequest) {
   try {
@@ -22,10 +23,16 @@ export async function GET(req: NextRequest) {
 
     let avgTempQuery = {};
     let roomQuery = {};
+    let addFields = {};
     if (recordedAt) {
-      const [fromDate, toDate] = recordedAt as [Date, Date];
+      const fromDate = format(new Date(recordedAt[0]), "yyyy-MM-dd");
+      const toDate = format(new Date(recordedAt[1]), "yyyy-MM-d");
+
       avgTempQuery = {
-        created_at: { $gte: new Date(fromDate), $lte: new Date(toDate) },
+        createdDate: {
+          $gte: fromDate,
+          $lte: toDate,
+        },
       };
     }
     if (location) {
@@ -61,17 +68,35 @@ export async function GET(req: NextRequest) {
         },
         { $unwind: "$location" },
         {
-          $project: {
-            _id: 0,
-            celsius: 1,
-            warehouse: "$location.warehouse_tag",
-            location: "$location.name",
-            created_at: 1,
+          $addFields: {
+            createdDate: {
+              $dateToString: {
+                format: "%Y-%m-%d",
+                date: "$created_at",
+                timezone: "Asia/Manila",
+              },
+            },
+            createdTime: {
+              $dateToString: {
+                format: "%H:%M:%S",
+                date: "$created_at",
+                timezone: "Asia/Manila",
+              },
+            },
           },
         },
         {
           $match: {
             ...avgTempQuery,
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            celsius: 1,
+            warehouse: "$location.warehouse_tag",
+            location: "$location.name",
+            created_at: { $concat: ["$createdDate", " ", "$createdTime"] },
           },
         },
       ])
