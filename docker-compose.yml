@@ -6,7 +6,7 @@ networks:
 
 services:
   mongo_1:
-    image: mongo:5.0.16
+    image: mongo:4.4.22
     container_name: mongo_1
     command: ["--replSet", "hawkeye-replset", "--bind_ip_all", "--port", "3200"]
     volumes:
@@ -20,7 +20,7 @@ services:
     networks:
       - hawkeye
   mongo_2:
-    image: mongo:5.0.16
+    image: mongo:4.4.22
     container_name: mongo_2
     command: ["--replSet", "hawkeye-replset", "--bind_ip_all", "--port", "3300"]
     volumes:
