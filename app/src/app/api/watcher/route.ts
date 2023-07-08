@@ -16,12 +16,6 @@ export async function GET() {
   const changeStream = db.collection("temperature").watch();
 
   changeStream.on("change", async (change) => {
-    if (change.operationType === "insert") {
-      console.log("Change stream document:", change.fullDocument);
-    } else {
-      console.log("Change stream operationType: ", change.operationType);
-    }
-
     await writer.ready;
     await writer.write(encoder.encode(`data: ${JSON.stringify(change)}\n\n`));
   });
