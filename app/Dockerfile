@@ -47,6 +47,10 @@ CMD ["yarn", "start:staging"]
 
 FROM main as app_prod
 
+# Possible workaround to fix. nextjs error: The server running out of memory
+# TODO: verify if this workaround is working.
+ENV NODE_OPTIONS="--max-old-space-size=8192"
+
 RUN mkdir -p .next
 RUN chown node:node -R .next && \
     chmod 777 -R .next
