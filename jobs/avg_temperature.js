@@ -15,44 +15,28 @@ cron.schedule("*/30 * * * *", async function () {
 
     const roomAvgTemp = await conn
       .db(DB_NAME)
-      .collection("room")
+      .collection("temperature")
       .aggregate([
         {
-          $lookup: {
-            from: "temperature",
-            localField: "_id",
-            foreignField: "room_id",
-            pipeline: [
-              {
-                $match: { created_at: { $gt: from, $lte: to } },
-              },
-              {
-                $group: {
-                  _id: "$room_id",
-                  avgCelsius: { $avg: "$celsius" },
-                  maxCelsiusCreatedAt: { $max: "$created_at" },
-                },
-              },
-              { $sort: { created_at: -1 } },
-              { $addFields: { roundCelsius: { $round: ["$avgCelsius", 2] } } },
-              {
-                $project: {
-                  _id: 0,
-                  celsius: "$roundCelsius",
-                  last_temperature_at: "$maxCelsiusCreatedAt",
-                },
-              },
-            ],
-            as: "temperature",
+          $match: {
+            created_at: { $gt: from, $lte: to },
           },
         },
-        { $unwind: "$temperature" },
+        {
+          $group: {
+            _id: "$room_id",
+            avgCelsius: { $avg: "$celsius" },
+            maxCelsiusCreatedAt: { $max: "$created_at" },
+          },
+        },
+        { $sort: { created_at: -1 } },
+        { $addFields: { roundCelsius: { $round: ["$avgCelsius", 2] } } },
         {
           $project: {
             _id: 0,
             room_id: "$_id",
-            celsius: "$temperature.celsius",
-            last_temperature_at: "$temperature.last_temperature_at",
+            celsius: "$roundCelsius",
+            last_temperature_at: "$maxCelsiusCreatedAt",
           },
         },
       ])
