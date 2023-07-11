@@ -20,7 +20,7 @@ export default function miscData() {
     },
     {
       id: "created_at",
-      accessorKey: "created_at",
+      accessorFn: (row) => new Date(row.created_at).toLocaleString(),
       header: "Recorded at",
     },
   ];

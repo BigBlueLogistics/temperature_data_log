@@ -3,8 +3,8 @@ import { TResponse } from "./response";
 
 export type AvgTempEntity = WithId<{
   celsius: number;
-  warehouse: string;
-  location: string;
+  warehouse_tag: string;
+  name: string;
   created_at: Date;
 }>;
 

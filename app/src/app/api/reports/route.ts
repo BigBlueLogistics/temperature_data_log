@@ -22,8 +22,7 @@ export async function GET(req: NextRequest) {
     const db = client.db(process.env.DB_NAME);
 
     let avgTempQuery = {};
-    let roomQuery = {};
-    let addFields = {};
+    let locationQuery = {};
     if (recordedAt) {
       const fromDate = format(new Date(recordedAt[0]), "yyyy-MM-dd");
       const toDate = format(new Date(recordedAt[1]), "yyyy-MM-d");
@@ -36,10 +35,16 @@ export async function GET(req: NextRequest) {
       };
     }
     if (location) {
-      roomQuery = { ...roomQuery, _id: location };
+      locationQuery = {
+        ...locationQuery,
+        "locations._id": location,
+      };
     }
     if (warehouseNo) {
-      roomQuery = { ...roomQuery, warehouse_tag: warehouseNo };
+      locationQuery = {
+        ...locationQuery,
+        "locations.warehouse_tag": warehouseNo,
+      };
     }
 
     const reportAvgTemp = await db
@@ -50,23 +55,21 @@ export async function GET(req: NextRequest) {
             from: "room",
             localField: "room_id",
             foreignField: "_id",
-            pipeline: [
-              {
-                $match: {
-                  ...roomQuery,
-                },
-              },
-              {
-                $project: {
-                  name: 1,
-                  warehouse_tag: 1,
-                },
-              },
-            ],
-            as: "location",
+            as: "locations",
           },
         },
-        { $unwind: "$location" },
+        {
+          $replaceRoot: {
+            newRoot: {
+              $mergeObjects: [
+                {
+                  $arrayElemAt: ["$locations", 0],
+                },
+                "$$ROOT",
+              ],
+            },
+          },
+        },
         {
           $addFields: {
             createdDate: {
@@ -83,20 +86,27 @@ export async function GET(req: NextRequest) {
                 timezone: "Asia/Manila",
               },
             },
+
+            location: { $arrayElemAt: ["$locations.name", 0] },
+            warehouse: { $arrayElemAt: ["$locations.warehouse_tag", 0] },
           },
         },
         {
           $match: {
             ...avgTempQuery,
+            ...locationQuery,
           },
         },
         {
           $project: {
-            _id: 0,
-            celsius: 1,
-            warehouse: "$location.warehouse_tag",
-            location: "$location.name",
-            created_at: { $concat: ["$createdDate", " ", "$createdTime"] },
+            locations: 0,
+            name: 0,
+            room_id: 0,
+            createdDate: 0,
+            createdTime: 0,
+            order: 0,
+            warehouse_tag: 0,
+            last_temperature_at: 0,
           },
         },
       ])
