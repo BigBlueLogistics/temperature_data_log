@@ -16,7 +16,12 @@ export default function miscData() {
     {
       id: "celsius",
       accessorKey: "celsius",
-      header: "Temperature °C",
+      header: "Temperature (°C)",
+    },
+    {
+      id: "humidity",
+      accessorKey: "humidity",
+      header: "Humidity (%)",
     },
     {
       id: "created_at",

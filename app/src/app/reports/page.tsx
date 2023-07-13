@@ -42,6 +42,7 @@ function Reports({ searchParams }: TPropsReports) {
         { key: "warehouse", header: "Warehouse" },
         { key: "location", header: "Location" },
         { key: "celsius", header: "Temperature" },
+        { key: "humidity", header: "Humidity" },
         { key: "created_at", header: "Recorded at" },
       ],
       data: reportsData,
