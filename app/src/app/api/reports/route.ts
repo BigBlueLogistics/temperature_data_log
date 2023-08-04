@@ -109,6 +109,9 @@ export async function GET(req: NextRequest) {
             last_temperature_at: 0,
           },
         },
+        {
+          $sort: { created_at: -1 },
+        },
       ])
       .toArray();
 
