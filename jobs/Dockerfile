@@ -1,4 +1,4 @@
-FROM node:18-slim as builder
+FROM node:18.17.0-slim as builder
 
 ARG ROOT_APP_DIR=/var/www/html
 WORKDIR $ROOT_APP_DIR
@@ -10,7 +10,7 @@ COPY package.json \
 
 RUN yarn install
 
-FROM node:18-alpine as main
+FROM node:18.17.0-alpine as main
 
 ARG ROOT_APP_DIR=/var/www/html
 
