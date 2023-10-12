@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import { useMemo } from "react";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -10,6 +10,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TablePagination from "@mui/material/TablePagination";
 import InputBase from "@mui/material/InputBase";
+import Skeleton from "@mui/material/Skeleton";
 import {
   Column,
   Table as ReactTable,
@@ -22,10 +23,23 @@ import {
 import TablePaginationActions from "./actions";
 import { TPropsDataTable } from "./types";
 
-function DataTable({ data, columns }: TPropsDataTable) {
+function DataTable({ data, columns, isLoading }: TPropsDataTable) {
+  const tableColumns = useMemo(() => {
+    return isLoading
+      ? columns.map((column) => ({
+          ...column,
+          cell: () => <Skeleton width="100%" height={15} />,
+        }))
+      : columns;
+  }, [isLoading, columns]);
+
+  const tableData = useMemo(() => {
+    return isLoading ? new Array(5).fill({}) : data;
+  }, [isLoading, data]);
+
   const table = useReactTable({
-    data,
-    columns,
+    data: tableData,
+    columns: tableColumns,
     // Pipeline
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -67,7 +81,7 @@ function DataTable({ data, columns }: TPropsDataTable) {
               ))}
           </TableHead>
           <TableBody>
-            {table && data.length ? (
+            {table && tableData.length ? (
               table.getRowModel().rows.map((row) => {
                 return (
                   <TableRow key={row.id}>

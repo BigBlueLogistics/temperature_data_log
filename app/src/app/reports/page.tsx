@@ -10,7 +10,7 @@ import { AvgTempEntity } from "@/entities/avgTemperature";
 import { WarehouseEntity } from "@/entities/warehouse";
 import { LocationEntity } from "@/entities/location";
 import { writeExcel } from "@/lib/excel";
-import { TPropsReports, TFilterValues } from "./types";
+import { TPropsReports, TFilterValues, TReportsData } from "./types";
 import miscData from "./miscData";
 
 function Reports({ searchParams }: TPropsReports) {
@@ -22,14 +22,35 @@ function Reports({ searchParams }: TPropsReports) {
     warehouseNo: null,
     recordedAt: null,
   });
-  const [reportsData, setReportsData] = useState<AvgTempEntity[]>([]);
+  const [reportsData, setReportsData] = useState<TReportsData>({
+    data: [],
+    status: "idle",
+    message: "",
+  });
   const [warehouseList, setWarehouseList] = useState<WarehouseEntity[]>([]);
   const [locationList, setLocationList] = useState<LocationEntity[]>([]);
 
   const onFilter = async (arg: TPropsReports["searchParams"]) => {
-    const res = await getAvgTemp(arg);
-    if (res.status === "succeeded") {
-      setReportsData(res.data);
+    if (arg === null) {
+      return;
+    }
+    setReportsData((prev) => ({ ...prev, status: "loading" }));
+
+    try {
+      const res = await getAvgTemp(arg);
+      if (res.status === "succeeded") {
+        setReportsData({
+          status: "succeeded",
+          data: res.data,
+          message: res.message,
+        });
+      }
+    } catch (err: any) {
+      setReportsData({
+        status: "failed",
+        data: [],
+        message: err.message,
+      });
     }
   };
 
@@ -45,7 +66,7 @@ function Reports({ searchParams }: TPropsReports) {
         { key: "humidity", header: "Humidity" },
         { key: "created_at", header: "Recorded at" },
       ],
-      data: reportsData,
+      data: reportsData.data,
       filename: "reports",
       sheetname: "Temperature",
     });
@@ -133,10 +154,11 @@ function Reports({ searchParams }: TPropsReports) {
   return (
     <ReportsTemplate
       columns={columns}
-      data={reportsData}
+      data={reportsData.data}
       warehouseList={warehouseList}
       locationList={locationList}
       filterValues={filterValues}
+      isLoadingData={reportsData.status === "loading"}
       onFilter={onFilter}
       onExport={onExport}
       onLocation={onLocation}

@@ -10,11 +10,13 @@ import AutocompleteLocation from "../AutocompleteLocation";
 import AutocompleteWarehouse from "../AutocompleteWarehouse";
 import DatePicker from "react-datepicker";
 import { TPropsFilter } from "./types";
+import { TPropsReports } from "@/app/reports/types";
 
 function Filter({
   values,
   warehouseList,
   locationList,
+  isLoadingData,
   onWarehouse,
   onLocation,
   onRecordedAt,
@@ -28,12 +30,15 @@ function Filter({
   };
 
   const formatFilterVal = () => {
-    let filterValues = {};
+    let filterValues = null;
     if (values.warehouseNo) {
       filterValues = { warehouseNo: values.warehouseNo.tag_id };
     }
     if (values.location) {
-      filterValues = { ...filterValues, location: values.location._id };
+      filterValues = {
+        ...filterValues,
+        location: values.location._id,
+      };
     }
     if (values.recordedAt?.length) {
       const formatRecordedAt = [
@@ -45,7 +50,7 @@ function Filter({
         recordedAt: JSON.stringify(formatRecordedAt),
       };
     }
-    return filterValues;
+    return filterValues as TPropsReports["searchParams"];
   };
 
   const DateInput = forwardRef<HTMLDivElement, TextFieldProps>(
@@ -96,8 +101,9 @@ function Filter({
             onClick={() => onFilter(formatFilterVal())}
             variant="contained"
             color="primary"
+            sx={{ pointerEvents: isLoadingData ? "none" : "auto" }}
           >
-            Search
+            {isLoadingData ? "Loading..." : "Search"}
           </Button>
         </Grid>
       </Grid>

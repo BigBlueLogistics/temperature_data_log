@@ -8,6 +8,7 @@ export type TPropsFilter = {
   values: TFilterValues;
   warehouseList: WarehouseEntity[];
   locationList: LocationEntity[];
+  isLoadingData: boolean;
   onLocation: (
     value: LocationEntity | null,
     reason: AutocompleteChangeReason

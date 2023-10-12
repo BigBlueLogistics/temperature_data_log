@@ -12,6 +12,7 @@ function ReportsTemplate({
   warehouseList,
   locationList,
   filterValues,
+  isLoadingData,
   onLocation,
   onWarehouse,
   onRecordedAt,
@@ -42,6 +43,7 @@ function ReportsTemplate({
           records found.
         </Typography>
         <Button
+          disabled={isLoadingData}
           startIcon={<FileDownloadIcon />}
           variant="text"
           onClick={() =>
@@ -59,13 +61,14 @@ function ReportsTemplate({
         values={filterValues}
         warehouseList={warehouseList}
         locationList={locationList}
+        isLoadingData={isLoadingData}
         onWarehouse={onWarehouse}
         onLocation={onLocation}
         onRecordedAt={onRecordedAt}
         onFilter={onFilter}
       />
 
-      <DataTable columns={columns} data={data} />
+      <DataTable columns={columns} data={data} isLoading={isLoadingData} />
     </Box>
   );
 }

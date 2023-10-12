@@ -11,6 +11,7 @@ export type TPropsReportsTemplate = {
   locationList: LocationEntity[];
   columns: ColumnDef<AvgTempEntity>[];
   filterValues: TFilterValues;
+  isLoadingData: boolean;
   onFilter: (keys: TPropsReports["searchParams"]) => void;
   onExport: (
     warehouse: string | undefined,
