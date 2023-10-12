@@ -1,8 +1,8 @@
-import Excel from "exceljs";
+import Excel from "exceljs/dist/exceljs";
 
 type TExcel = {
   data: Record<string, any>[];
-  columns: Partial<Excel.Column>[];
+  columns: Partial<Record<string, any>>[];
   filename: string;
   sheetname?: string;
 };
@@ -15,5 +15,5 @@ export function writeExcel({ data, columns, filename, sheetname }: TExcel) {
 
   worksheet.addRows(data);
 
-  return workbook.xlsx.writeBuffer();
+  return workbook.xlsx.writeBuffer({ filename });
 }

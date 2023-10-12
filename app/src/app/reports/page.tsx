@@ -58,7 +58,7 @@ function Reports({ searchParams }: TPropsReports) {
       filename += `-${location}`;
     }
 
-    buffer.then((data) => {
+    buffer.then((data: BlobPart) => {
       const blob = new Blob([data], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
