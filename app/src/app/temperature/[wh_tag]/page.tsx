@@ -2,7 +2,6 @@ import dynamicImport from "next/dynamic";
 import { listRoom } from "@/services";
 import { TPropsTemperature } from "./types";
 
-export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const GaugeList = dynamicImport(() => import("../../../components/GaugeList"), {
@@ -11,9 +10,18 @@ const GaugeList = dynamicImport(() => import("../../../components/GaugeList"), {
 
 async function Temperature({ params }: TPropsTemperature) {
   const { wh_tag } = params;
-  const room = await listRoom({ warehouseSlug: wh_tag });
+  const room = await listRoom(wh_tag);
 
-  const initialRoomData = room || {};
+  const objRoom = room.data.reduce((prev, current) => {
+    const { _id, name } = current;
+    const id = _id.toString();
+
+    const formatObj = { [id]: { name, temperature: null } };
+    Object.assign(prev, formatObj);
+    return prev;
+  }, {});
+
+  const initialRoomData = objRoom || {};
   return <GaugeList initialTemp={initialRoomData} />;
 }
 
