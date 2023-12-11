@@ -16,6 +16,7 @@ COPY .env-* \
     tsconfig.json ./
 
 RUN yarn install
+RUN npm install pm2 -g
 
 FROM node:18.17.0-alpine as main
 
