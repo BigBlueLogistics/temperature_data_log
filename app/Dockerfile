@@ -16,7 +16,7 @@ COPY .env-* \
     tsconfig.json ./
 
 RUN yarn config set disable-self-update-check true
-RUN yarn install
+RUN yarn install --frozen-lockfile
 
 FROM node:20.10.0-alpine as main
 
