@@ -1,4 +1,4 @@
-FROM node:18.17.0-slim as builder
+FROM node:20.10.0-slim as builder
 
 ARG ROOT_APP_DIR=/var/www/html
 WORKDIR $ROOT_APP_DIR
@@ -18,7 +18,7 @@ COPY .env-* \
 RUN yarn config set disable-self-update-check true
 RUN yarn install --frozen-lockfile
 
-FROM node:18.17.0-alpine as main
+FROM node:20.10.0-alpine as main
 
 ARG ROOT_APP_DIR=/var/www/html
 
