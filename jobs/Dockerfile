@@ -8,7 +8,7 @@ COPY package.json \
     avg_temperature.js \
     .env-* ./
 
-RUN yarn install
+RUN yarn install --frozen-lockfile
 
 FROM node:18.17.0-alpine as main
 
