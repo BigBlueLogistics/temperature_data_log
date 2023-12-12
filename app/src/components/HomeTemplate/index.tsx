@@ -1,3 +1,5 @@
+"use client";
+
 import { useRouter } from "next/navigation";
 import { Unstable_Grid2 as Grid, Typography, Box } from "@mui/material";
 import WarehouseItem from "@/components/WarehouseItem";
