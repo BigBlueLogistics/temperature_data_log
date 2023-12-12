@@ -15,8 +15,7 @@ COPY .env-* \
     next.config.js \
     tsconfig.json ./
 
-RUN yarn install
-RUN npm install pm2 -g
+RUN yarn install --frozen-lockfile
 
 FROM node:18.17.0-alpine as main
 
