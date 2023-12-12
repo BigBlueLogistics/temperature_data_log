@@ -1,5 +1,5 @@
 {
-  "name": "temperature_data_log",
+  "name": "hawkeye",
   "version": "1.0.0",
   "private": true,
   "scripts": {

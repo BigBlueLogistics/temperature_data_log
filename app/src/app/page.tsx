@@ -1,10 +1,21 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import HomeTemplate from "@/components/HomeTemplate";
 import getWarehouse from "@/services/warehouse/get";
+import { WarehouseEntity } from "@/entities/warehouse";
 
-async function Home() {
-  const warehouse = await getWarehouse();
+export default function Home() {
+  const [warehouseList, setWarehouseList] = useState<WarehouseEntity[]>([]);
 
-  return <HomeTemplate warehouseList={warehouse.data} />;
+  const getListOfWarehouse = async () => {
+    const warehouse = await getWarehouse();
+    setWarehouseList(warehouse.data);
+  };
+
+  useEffect(() => {
+    getListOfWarehouse();
+  }, []);
+
+  return <HomeTemplate warehouseList={warehouseList} />;
 }
-
-export default Home;
