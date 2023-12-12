@@ -15,7 +15,7 @@ COPY .env-* \
     next.config.js \
     tsconfig.json ./
 
-RUN yarn install
+RUN yarn install --frozen-lockfile
 
 FROM node:18.17.0-alpine as main
 
