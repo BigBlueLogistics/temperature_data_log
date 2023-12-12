@@ -2,8 +2,7 @@ import Layout from "@/components/Layout";
 import { Inter } from "next/font/google";
 import "react-datepicker/dist/react-datepicker.css";
 
-export const inter = Inter({
-  weight: ["300", "400", "500", "700"],
+const inter = Inter({
   subsets: ["latin"],
   display: "swap",
   fallback: ["Helvetica", "Arial", "sans-serif"],
