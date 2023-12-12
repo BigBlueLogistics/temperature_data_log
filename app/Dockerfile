@@ -15,8 +15,7 @@ COPY .env-* \
     next.config.js \
     tsconfig.json ./
 
-RUN yarn config set disable-self-update-check true
-RUN yarn install --frozen-lockfile
+RUN yarn install
 
 FROM node:18.17.0-alpine as main
 
