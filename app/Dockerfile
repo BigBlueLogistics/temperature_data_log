@@ -1,4 +1,4 @@
-FROM node:18.17.0-slim as builder
+FROM node:20.10.0-slim as builder
 
 ARG ROOT_APP_DIR=/var/www/html
 WORKDIR $ROOT_APP_DIR
@@ -15,10 +15,10 @@ COPY .env-* \
     next.config.js \
     tsconfig.json ./
 
-RUN yarn install
-RUN npm install pm2 -g
+RUN yarn install --network-timeout 120000 && \
+    yarn cache clean
 
-FROM node:18.17.0-alpine as main
+FROM node:20.10.0-alpine as main
 
 ARG ROOT_APP_DIR=/var/www/html
 
