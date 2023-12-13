@@ -72,3 +72,19 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export async function GET() {
+  try {
+    const client = await mongodbInit;
+    const db = client.db(process.env.DB_NAME);
+
+    const temp = await db.collection("docks").find({}).toArray();
+
+    return NextResponse.json({ status: "succeeded", data: temp });
+  } catch (e) {
+    return NextResponse.json(
+      { status: "error", message: getErrorMessage(e) },
+      { status: 500 }
+    );
+  }
+}
