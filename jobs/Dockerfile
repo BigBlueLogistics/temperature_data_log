@@ -4,7 +4,7 @@ ARG ROOT_APP_DIR=/var/www/html
 WORKDIR $ROOT_APP_DIR
 
 COPY package.json \ 
-    package-lock.json \
+    yarn.lock* \
     avg_temperature.js \
     .env-* ./
 
