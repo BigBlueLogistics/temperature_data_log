@@ -3,7 +3,7 @@ import React from "react";
 
 type Props = {
   params: { wh_tag: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  //   searchParams: { [key: string]: string | string[] | undefined };
 };
 
 export function generateMetadata({ params }: Props): Metadata {
