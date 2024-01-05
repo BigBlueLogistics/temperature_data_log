@@ -1,5 +1,5 @@
 import dynamicImport from "next/dynamic";
-import { listRoom } from "@/services";
+import { locationList } from "@/services/internal";
 import { TPropsTemperature } from "./types";
 
 export const runtime = "nodejs";
@@ -11,7 +11,7 @@ const GaugeList = dynamicImport(() => import("../../../components/GaugeList"), {
 
 async function Temperature({ params }: TPropsTemperature) {
   const { wh_tag } = params;
-  const room = await listRoom({ warehouseSlug: wh_tag });
+  const room = await locationList({ warehouseSlug: wh_tag });
 
   const initialRoomData = room || {};
   return <GaugeList initialTemp={initialRoomData} />;

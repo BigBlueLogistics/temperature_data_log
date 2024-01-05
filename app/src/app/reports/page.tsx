@@ -3,10 +3,7 @@
 import { useEffect, useState } from "react";
 import { AutocompleteChangeReason } from "@mui/material";
 import ReportsTemplate from "@/components/ReportsTemplate";
-import getAvgTemp from "@/services/reports/avg_temperature";
-import getWarehouse from "@/services/warehouse/get";
-import getLocation from "@/services/location/get";
-import { AvgTempEntity } from "@/entities/avgTemperature";
+import { getLocation, getAvgTemp, getWarehouse } from "@/services/external";
 import { WarehouseEntity } from "@/entities/warehouse";
 import { LocationEntity } from "@/entities/location";
 import { writeExcel } from "@/lib/excel";

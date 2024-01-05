@@ -1,21 +1,15 @@
-"use client";
-
-import { useState, useEffect } from "react";
+import type { Metadata } from "next";
 import HomeTemplate from "@/components/HomeTemplate";
-import getWarehouse from "@/services/warehouse/get";
-import { WarehouseEntity } from "@/entities/warehouse";
+import { warehouseList } from "@/services/internal";
 
-export default function Home() {
-  const [warehouseList, setWarehouseList] = useState<WarehouseEntity[]>([]);
+export const metadata: Metadata = {
+  title: "Temperature | Home",
+};
 
-  const getListOfWarehouse = async () => {
-    const warehouse = await getWarehouse();
-    setWarehouseList(warehouse.data);
-  };
+async function Home() {
+  const warehouse = await warehouseList();
 
-  useEffect(() => {
-    getListOfWarehouse();
-  }, []);
-
-  return <HomeTemplate warehouseList={warehouseList} />;
+  return <HomeTemplate warehouseList={warehouse} />;
 }
+
+export default Home;
