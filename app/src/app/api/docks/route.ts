@@ -1,67 +1,107 @@
 import { NextRequest, NextResponse } from "next/server";
 import mongodbInit from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
+import { AnyBulkWriteOperation, ObjectId, BulkOperationBase } from "mongodb";
 import { getErrorMessage } from "@/utils";
 
-export async function POST(req: NextRequest) {
-  const updateOne = (dockId: string, dockStatus: "VACANT" | "OCCUPIED") => {
-    return {
-      updateOne: {
-        filter: { _id: new ObjectId(dockId), status: { $ne: dockStatus } },
-        update: [
-          {
-            $set: {
-              status: dockStatus,
-              time_in: {
-                $cond: {
-                  if: { $eq: [dockStatus, "OCCUPIED"] },
-                  then: new Date(),
-                  else: "$time_in",
-                },
+type DockStatus = "VACANT" | "OCCUPIED";
+type DocksParams = {
+  dock_1: string;
+  sensor_1: DockStatus;
+  dock_2: string;
+  sensor_2: DockStatus;
+  dock_3: string;
+  sensor_3: DockStatus;
+  dock_4: string;
+  sensor_4: DockStatus;
+  dock_5: string;
+  sensor_5: DockStatus;
+};
+type BulkQueryFunc = (
+  dockId: string,
+  dockStatus: DockStatus
+) => AnyBulkWriteOperation;
+
+const updateOne: BulkQueryFunc = (dockId, dockStatus) => {
+  return {
+    updateOne: {
+      filter: { _id: new ObjectId(dockId), status: { $ne: dockStatus } },
+      update: [
+        {
+          $set: {
+            status: dockStatus,
+            time_in: {
+              $cond: {
+                if: { $eq: [dockStatus, "OCCUPIED"] },
+                then: new Date().toLocaleString(),
+                else: "$time_in",
               },
-              time_out: {
-                $cond: {
-                  if: { $eq: [dockStatus, "VACANT"] },
-                  then: new Date(),
-                  else: null,
-                },
+            },
+            time_out: {
+              $cond: {
+                if: { $eq: [dockStatus, "VACANT"] },
+                then: new Date().toLocaleString(),
+                else: null,
               },
             },
           },
-        ],
-      },
-    };
+        },
+      ],
+    },
   };
+};
 
+const insertOne: BulkQueryFunc = (dockId, dockStatus) => {
+  const type = dockStatus === "OCCUPIED" ? "time_in" : "time_out";
+  return {
+    insertOne: {
+      document: {
+        dock_id: dockId,
+        type,
+        log_at: new Date().toLocaleString(),
+      },
+    },
+  };
+};
+
+const bulkQuery = (
+  body: DocksParams,
+  callback: BulkQueryFunc
+): AnyBulkWriteOperation[] => {
+  let queries = [];
+  if (body.dock_1 && body.sensor_1) {
+    queries.push(callback(body.dock_1, body.sensor_1));
+  }
+  if (body.dock_2 && body.sensor_2) {
+    queries.push(callback(body.dock_2, body.sensor_2));
+  }
+  if (body.dock_3 && body.sensor_3) {
+    queries.push(callback(body.dock_3, body.sensor_3));
+  }
+  if (body.dock_4 && body.sensor_4) {
+    queries.push(callback(body.dock_4, body.sensor_4));
+  }
+  if (body.dock_5 && body.sensor_5) {
+    queries.push(callback(body.dock_5, body.sensor_5));
+  }
+
+  return queries;
+};
+
+export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const client = await mongodbInit;
     const db = client.db(process.env.DB_NAME);
 
-    const {
-      sensor_1,
-      dock_1,
-      sensor_2,
-      dock_2,
-      sensor_3,
-      dock_3,
-      sensor_4,
-      dock_4,
-      sensor_5,
-      dock_5,
-    } = body;
-
     const post = await db
       .collection("docks")
-      .bulkWrite([
-        updateOne(dock_1, sensor_1),
-        updateOne(dock_2, sensor_2),
-        updateOne(dock_3, sensor_3),
-        updateOne(dock_4, sensor_4),
-        updateOne(dock_5, sensor_5),
-      ]);
+      .bulkWrite(bulkQuery(body, updateOne));
 
-    return NextResponse.json({ status: "succeeded", data: post });
+    const logs = await db
+      .collection("docks_log")
+      .bulkWrite(bulkQuery(body, insertOne));
+
+    return NextResponse.json({ status: "succeeded", data: [post, logs] });
   } catch (e) {
     return NextResponse.json(
       {
