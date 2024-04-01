@@ -38,6 +38,11 @@ function Sidebar({ open, onClose }: TSidebar) {
       main: { title: "Temperature", icon: <Thermostat /> },
       options: [
         {
+          link: "/temperature/bb04",
+          title: "BB04",
+          icon: <Warehouse />,
+        },
+        {
           link: "/temperature/bb05",
           title: "BB05",
           icon: <Warehouse />,
